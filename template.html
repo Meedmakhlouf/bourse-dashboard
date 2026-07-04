@@ -1,0 +1,442 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Boursier — Analyse du Jour</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3250;
+    --text: #e2e8f0;
+    --text-muted: #8b92b3;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+    --buy: #22c55e;
+    --dip: #3b82f6;
+    --long: #8b5cf6;
+    --wait: #f59e0b;
+    --low: #22c55e;
+    --moderate: #f59e0b;
+    --high: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-left h1 { font-size: 22px; font-weight: 700; color: #fff; }
+  .header-left .date { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .header-right { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+  .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-pea { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+  .badge-intl { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+  .badge-closed { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+  .tabs {
+    display: flex; gap: 0; padding: 20px 32px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 10px 24px; cursor: pointer; font-size: 14px; font-weight: 600;
+    border-bottom: 2px solid transparent; color: var(--text-muted); transition: all 0.2s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: #fff; border-bottom-color: var(--blue); }
+
+  .content { padding: 28px 32px; max-width: 1400px; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 18px; margin-top: 32px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .section-count {
+    background: var(--surface2); color: var(--text-muted);
+    padding: 2px 9px; border-radius: 12px; font-size: 12px;
+  }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #3e4475; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .card-ticker { font-size: 18px; font-weight: 800; color: #fff; }
+  .card-name { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .card-bourse { font-size: 11px; color: #5a617a; margin-top: 2px; }
+
+  .card-right { text-align: right; }
+  .card-price { font-size: 20px; font-weight: 700; color: #fff; }
+  .card-var { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .card-var.up { color: var(--green); }
+  .card-var.down { color: var(--red); }
+  .card-var.na { color: var(--text-muted); }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .tag { padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .tag-buy { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+  .tag-dip { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+  .tag-long { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+  .tag-wait { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+  .tag-low { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+  .tag-moderate { background: rgba(245,158,11,0.1); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2); }
+  .tag-high { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+  .tag-sector { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.2); }
+  .tag-hp { background: rgba(249,115,22,0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.25); }
+
+  .card-catalyst {
+    font-size: 12px; color: var(--text-muted); line-height: 1.5;
+    padding: 10px 12px; background: var(--surface2); border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  .card-catalyst .label { color: var(--text); font-weight: 600; margin-bottom: 3px; display: block; }
+
+  .card-targets {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
+  }
+  .target-box {
+    background: var(--surface2); border-radius: 8px; padding: 8px 12px;
+  }
+  .target-box .t-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .target-box .t-value { font-size: 13px; font-weight: 700; margin-top: 2px; }
+  .target-box.target .t-value { color: var(--green); }
+  .target-box.sl .t-value { color: var(--red); }
+
+  .card-horizon {
+    font-size: 11px; color: var(--text-muted); text-align: right;
+  }
+  .card-horizon span { color: var(--text); font-weight: 600; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+
+  .dip-extra { margin-top: 10px; }
+  .dip-row { margin-bottom: 6px; }
+  .dip-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 2px; }
+  .dip-text { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+  .macro-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px; margin-bottom: 24px;
+  }
+  .macro-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .macro-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .macro-item { background: var(--surface2); border-radius: 8px; padding: 10px 14px; }
+  .macro-item .m-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .macro-item .m-value { font-size: 16px; font-weight: 700; color: #fff; margin-top: 2px; }
+  .macro-item .m-var { font-size: 12px; margin-top: 2px; }
+
+  .filter-bar {
+    display: flex; gap: 8px; align-items: center; padding: 16px 32px;
+    background: var(--surface); border-bottom: 1px solid var(--border); flex-wrap: wrap;
+  }
+  .filter-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .filter-btn {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .filter-btn.active-budget { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+  .warning {
+    font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border);
+    padding: 16px 32px; text-align: center; margin-top: 24px;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 768px) {
+    .header { padding: 16px; flex-direction: column; gap: 12px; }
+    .tabs { padding: 16px 16px 0; }
+    .content { padding: 16px; }
+    .filter-bar { padding: 12px 16px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<script>
+// <<DATA_START>> — replaced by cloud agent on each run
+const DATE_ANALYSE = "";
+const STOCKS = {pea:{topPicks:[],potential:[],dip:[]},international:{topPicks:[],potential:[],dip:[]}};
+// <<DATA_END>>
+</script>
+
+<div class="header">
+  <div class="header-left">
+    <h1>📊 Dashboard Boursier</h1>
+    <div class="date" id="header-date">Analyse du —</div>
+  </div>
+  <div class="header-right">
+    <span class="badge badge-pea">🇪🇺 PEA — Trade Republic</span>
+    <span class="badge badge-intl">🌍 International — Scalable Capital</span>
+    <span class="badge badge-closed" id="market-status">🔴 Marchés fermés (week-end)</span>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filtres :</span>
+  <button class="filter-btn active" onclick="setFilter('all', this)">Tous</button>
+  <button class="filter-btn" onclick="setFilter('buy', this)">🔥 Top Picks</button>
+  <button class="filter-btn" onclick="setFilter('long', this)">🚀 Potentiel</button>
+  <button class="filter-btn" onclick="setFilter('dip', this)">📉 Buy the Dip</button>
+  <span style="flex:1"></span>
+  <button class="filter-btn" id="budget-btn" onclick="toggleBudget(this)">💰 Masquer >200€</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('pea', this)">🇪🇺 Actions PEA (Trade Republic)</div>
+  <div class="tab" onclick="switchTab('intl', this)">🌍 International (Scalable Capital)</div>
+</div>
+
+<div class="content">
+
+  <!-- PEA Tab -->
+  <div id="tab-pea">
+    <div id="macro-pea" class="macro-box">
+      <div class="macro-title">📈 Marché européen — Clôture vendredi 3 juillet 2026</div>
+      <div class="macro-grid">
+        <div class="macro-item">
+          <div class="m-label">CAC 40</div>
+          <div class="m-value">8 474 pts</div>
+          <div class="m-var" style="color:var(--green)">+1.65% vendredi</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">DAX 40</div>
+          <div class="m-value">Nouveau record</div>
+          <div class="m-var" style="color:var(--green)">+2.02% vendredi</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">Secteur Chaud</div>
+          <div class="m-value">Défense 🛡️</div>
+          <div class="m-var" style="color:var(--green)">+4 à +6% cette semaine</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">Marché aujourd'hui</div>
+          <div class="m-value">Fermé</div>
+          <div class="m-var" style="color:var(--text-muted)">Samedi 4 juillet</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span style="font-size:20px">🔥</span>
+      <span class="section-title">TOP PICKS — Gagnants du Jour</span>
+      <span class="section-count" id="count-pea-buy">2</span>
+    </div>
+    <div class="grid" id="grid-pea-buy"></div>
+
+    <div class="section-header">
+      <span style="font-size:20px">🚀</span>
+      <span class="section-title">Potentiel Long Terme (3–18 mois)</span>
+      <span class="section-count" id="count-pea-long">2</span>
+    </div>
+    <div class="grid" id="grid-pea-long"></div>
+
+    <div class="section-header">
+      <span style="font-size:20px">📉</span>
+      <span class="section-title">Buy the Dip — Baisse Temporaire</span>
+      <span class="section-count" id="count-pea-dip">2</span>
+    </div>
+    <div class="grid" id="grid-pea-dip"></div>
+  </div>
+
+  <!-- International Tab -->
+  <div id="tab-intl" class="hidden">
+    <div id="macro-intl" class="macro-box">
+      <div class="macro-title">🌍 Marchés internationaux — Dernière clôture : jeudi 2 juillet 2026</div>
+      <div class="macro-grid">
+        <div class="macro-item">
+          <div class="m-label">NYSE / NASDAQ</div>
+          <div class="m-value">Fermés</div>
+          <div class="m-var" style="color:var(--red)">4 juillet (Independence Day)</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">Dow Jones</div>
+          <div class="m-value">52 319 pts</div>
+          <div class="m-var" style="color:var(--green)">+3.22% sur 1 mois</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">Rotation sectorielle</div>
+          <div class="m-value">Tech → Cyclique</div>
+          <div class="m-var" style="color:var(--yellow)">S&P500 -0.72% sur 1 mois</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">Reprise trading</div>
+          <div class="m-value">Lundi 6 juillet</div>
+          <div class="m-var" style="color:var(--text-muted)">9h30 ET</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span style="font-size:20px">🔥</span>
+      <span class="section-title">TOP PICKS — Catalyseurs Récents</span>
+      <span class="section-count" id="count-intl-buy">1</span>
+    </div>
+    <div class="grid" id="grid-intl-buy"></div>
+
+    <div class="section-header">
+      <span style="font-size:20px">🚀</span>
+      <span class="section-title">Potentiel Long Terme (3–18 mois)</span>
+      <span class="section-count" id="count-intl-long">2</span>
+    </div>
+    <div class="grid" id="grid-intl-long"></div>
+
+    <div class="section-header">
+      <span style="font-size:20px">📉</span>
+      <span class="section-title">Buy the Dip — Correction Temporaire</span>
+      <span class="section-count" id="count-intl-dip">1</span>
+    </div>
+    <div class="grid" id="grid-intl-dip"></div>
+  </div>
+
+</div>
+
+<div class="warning">
+  ⚠️ Informations à titre éducatif uniquement. Tous les prix proviennent de recherches web effectuées le <span id="warn-date"></span>. Dernière clôture EU : vendredi 3 juillet 2026 · Dernière clôture US : jeudi 2 juillet 2026. Pas un conseil en investissement.
+</div>
+
+<script>
+let currentFilter = 'all';
+let hideBudget = false;
+
+function varClass(sv) {
+  if (!sv || sv === 'N/A') return 'na';
+  return sv.startsWith('+') ? 'up' : 'down';
+}
+
+function recoLabel(r) {
+  const m = {buy:'🔥 TOP PICK', dip:'📉 Buy the Dip', long:'🚀 Potentiel', wait:'⏳ Attendre'};
+  return m[r] || r;
+}
+
+function buildCard(s) {
+  const priceStr = s.sv === 'N/A'
+    ? `<div class="card-price">${s.sp.toFixed(2)}${s.sc}</div><div class="card-var na">Var: N/A</div>`
+    : `<div class="card-price">${s.sp.toFixed(2)}${s.sc}</div><div class="card-var ${varClass(s.sv)}">${s.sv}</div>`;
+
+  const hpTag = s.hp ? `<span class="tag tag-hp">Budget élevé</span>` : '';
+  const dipExtra = (s.reco === 'dip' && (s.raisonBaisse || s.fondamentaux)) ? `
+    <hr class="divider">
+    <div class="dip-extra">
+      ${s.raisonBaisse ? `<div class="dip-row"><div class="dip-label">Raison de la baisse</div><div class="dip-text">${s.raisonBaisse}</div></div>` : ''}
+      ${s.fondamentaux ? `<div class="dip-row"><div class="dip-label">Fondamentaux</div><div class="dip-text">${s.fondamentaux}</div></div>` : ''}
+    </div>` : '';
+
+  return `
+  <div class="card" data-reco="${s.reco}" data-hp="${s.hp}" data-ticker="${s.dt}">
+    <div class="card-top">
+      <div>
+        <div class="card-ticker">${s.dt}</div>
+        <div class="card-name">${s.name}</div>
+        <div class="card-bourse">${s.bourse}</div>
+      </div>
+      <div class="card-right">${priceStr}</div>
+    </div>
+    <div class="tags">
+      <span class="tag tag-${s.reco}">${recoLabel(s.reco)}</span>
+      <span class="tag tag-${s.risque}">🛡️ ${s.rl}</span>
+      <span class="tag tag-sector">${s.secteur}</span>
+      ${hpTag}
+    </div>
+    <div class="card-catalyst">
+      <span class="label">💡 Catalyseur</span>
+      ${s.catalyst}
+    </div>
+    <div class="card-targets">
+      <div class="target-box target">
+        <div class="t-label">🎯 Cible</div>
+        <div class="t-value">${s.target}</div>
+      </div>
+      <div class="target-box sl">
+        <div class="t-label">🛑 Stop-loss</div>
+        <div class="t-value">${s.sl}</div>
+      </div>
+    </div>
+    <div class="card-horizon">Horizon : <span>${s.horizon}</span></div>
+    ${dipExtra}
+  </div>`;
+}
+
+function renderGrid(gridId, stocks) {
+  const el = document.getElementById(gridId);
+  if (!el) return;
+  el.innerHTML = stocks.map(buildCard).join('');
+}
+
+function applyFilters() {
+  document.querySelectorAll('.card').forEach(card => {
+    const reco = card.dataset.reco;
+    const hp = card.dataset.hp === 'true';
+    let show = true;
+    if (currentFilter !== 'all' && reco !== currentFilter) show = false;
+    if (hideBudget && hp) show = false;
+    card.classList.toggle('hidden', !show);
+  });
+
+  // update counts
+  ['pea','intl'].forEach(prefix => {
+    ['buy','long','dip'].forEach(type => {
+      const grid = document.getElementById(`grid-${prefix}-${type}`);
+      const count = document.getElementById(`count-${prefix}-${type}`);
+      if (grid && count) {
+        const visible = grid.querySelectorAll('.card:not(.hidden)').length;
+        count.textContent = visible;
+      }
+    });
+  });
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function toggleBudget(btn) {
+  hideBudget = !hideBudget;
+  btn.classList.toggle('active-budget', hideBudget);
+  applyFilters();
+}
+
+function switchTab(tab, tabEl) {
+  document.getElementById('tab-pea').classList.toggle('hidden', tab !== 'pea');
+  document.getElementById('tab-intl').classList.toggle('hidden', tab !== 'intl');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+}
+
+function init() {
+  document.getElementById('header-date').textContent = 'Analyse du ' + DATE_ANALYSE;
+  document.getElementById('warn-date').textContent = DATE_ANALYSE;
+
+  renderGrid('grid-pea-buy',   STOCKS.pea.topPicks);
+  renderGrid('grid-pea-long',  STOCKS.pea.potential);
+  renderGrid('grid-pea-dip',   STOCKS.pea.dip);
+  renderGrid('grid-intl-buy',  STOCKS.international.topPicks);
+  renderGrid('grid-intl-long', STOCKS.international.potential);
+  renderGrid('grid-intl-dip',  STOCKS.international.dip);
+  applyFilters();
+}
+
+init();
+</script>
+</body>
+</html>
