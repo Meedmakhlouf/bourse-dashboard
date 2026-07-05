@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 Méthodologie — Bourse Dashboard</title>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--border:#30363d;
+  --txt:#e6edf3;--txt2:#8b949e;--muted:#6e7681;
+  --green:#3fb950;--gbg:rgba(63,185,80,.12);--gborder:rgba(63,185,80,.3);
+  --red:#f85149;--rbg:rgba(248,81,73,.12);--rborder:rgba(248,81,73,.3);
+  --yellow:#d29922;--ybg:rgba(210,153,34,.12);--yborder:rgba(210,153,34,.3);
+  --blue:#58a6ff;--bbg:rgba(88,166,255,.12);--bborder:rgba(88,166,255,.3);
+  --purple:#bc8cff;--pbg:rgba(188,140,255,.12);--pborder:rgba(188,140,255,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* ── LOCK SCREEN ── */
+#lockScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0d1117;z-index:9999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+#lockScreen.hidden{display:none}
+.lk-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:340px;text-align:center}
+.lk-icon{font-size:2.5rem;margin-bottom:.8rem}
+.lk-title{font-size:1.1rem;font-weight:600;color:#e6edf3;margin-bottom:.25rem}
+.lk-sub{font-size:.75rem;color:#6e7681;margin-bottom:1.6rem}
+.lk-input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;font-size:1rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;box-sizing:border-box}
+.lk-input:focus{border-color:#58a6ff}
+.lk-btn{width:100%;margin-top:.7rem;background:#238636;border:none;border-radius:8px;color:#fff;font-size:.95rem;font-weight:600;padding:.72rem;cursor:pointer;transition:background .2s}
+.lk-btn:hover{background:#2ea043}
+.lk-err{color:#f85149;font-size:.78rem;margin-top:.65rem;min-height:1.1rem}
+
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;gap:.75rem;flex-wrap:wrap}
+.hdr-l{display:flex;align-items:center;gap:.6rem}
+.hdr-l h1{font-size:1.1rem;font-weight:600}
+.hdr-l small{font-size:.68rem;color:var(--muted);display:block}
+.hdr-r{display:flex;align-items:center;gap:.6rem}
+.btn{background:var(--bg3);border:1px solid var(--border);color:var(--txt2);border-radius:6px;padding:.28rem .75rem;font-size:.72rem;cursor:pointer;transition:.15s;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn.active{background:var(--bbg);border-color:var(--blue);color:var(--blue)}
+
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+
+h2{font-size:1.4rem;font-weight:700;color:var(--txt);margin-bottom:.4rem}
+.page-sub{color:var(--muted);font-size:.85rem;margin-bottom:2.5rem}
+
+.section{margin-bottom:2rem}
+.section-title{font-size:1rem;font-weight:700;color:var(--blue);margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.4rem;margin-bottom:.8rem}
+.card p{font-size:.875rem;color:var(--txt2);line-height:1.65}
+.card strong{color:var(--txt)}
+
+.rule-box{background:var(--rbg);border:1px solid var(--rborder);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:flex-start;gap:.75rem}
+.rule-box .ico{font-size:1.3rem;flex-shrink:0;margin-top:.05rem}
+.rule-box p{font-size:.875rem;color:var(--txt2);line-height:1.6}
+.rule-box strong{color:var(--txt)}
+
+table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.5rem}
+thead th{text-align:left;padding:.55rem .8rem;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+tbody td{padding:.55rem .8rem;color:var(--txt2);border-bottom:1px solid var(--bg3);vertical-align:top;line-height:1.5}
+tbody tr:last-child td{border-bottom:none}
+tbody td:first-child{color:var(--txt);font-weight:600;white-space:nowrap}
+
+.badge{display:inline-block;border-radius:20px;padding:.15rem .6rem;font-size:.72rem;font-weight:700}
+.badge.green{background:var(--gbg);border:1px solid var(--gborder);color:var(--green)}
+.badge.yellow{background:var(--ybg);border:1px solid var(--yborder);color:var(--yellow)}
+.badge.red{background:var(--rbg);border:1px solid var(--rborder);color:var(--red)}
+.badge.blue{background:var(--bbg);border:1px solid var(--bborder);color:var(--blue)}
+
+.steps{counter-reset:step;list-style:none;display:flex;flex-direction:column;gap:.75rem}
+.steps li{counter-increment:step;display:flex;gap:1rem;align-items:flex-start;font-size:.875rem;color:var(--txt2);line-height:1.6}
+.steps li::before{content:counter(step);min-width:1.6rem;height:1.6rem;border-radius:50%;background:var(--bbg);border:1px solid var(--bborder);color:var(--blue);font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.05rem}
+.steps li strong{color:var(--txt)}
+
+.warn{background:var(--ybg);border:1px solid var(--yborder);border-radius:8px;padding:.9rem 1.1rem;font-size:.8rem;color:var(--txt2);line-height:1.6;margin-top:.75rem}
+.warn strong{color:var(--yellow)}
+
+.source-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.5rem}
+.source-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;font-size:.78rem;color:var(--txt2);display:flex;align-items:center;gap:.5rem}
+.source-item .zone{font-weight:600;color:var(--txt);font-size:.7rem;min-width:4rem}
+
+.trust-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.5rem}
+.trust-card{border-radius:10px;padding:1rem 1.1rem}
+.trust-card.ok{background:var(--gbg);border:1px solid var(--gborder)}
+.trust-card.warn2{background:var(--ybg);border:1px solid var(--yborder)}
+.trust-card .trust-title{font-size:.8rem;font-weight:700;margin-bottom:.55rem}
+.trust-card.ok .trust-title{color:var(--green)}
+.trust-card.warn2 .trust-title{color:var(--yellow)}
+.trust-card ul{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.trust-card ul li{font-size:.78rem;color:var(--txt2);display:flex;gap:.45rem;align-items:flex-start;line-height:1.5}
+
+@media(max-width:640px){
+  .source-grid{grid-template-columns:1fr}
+  .trust-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="lockScreen">
+  <div class="lk-card">
+    <div class="lk-icon">📊</div>
+    <div class="lk-title">Bourse Dashboard</div>
+    <div class="lk-sub">Accès privé — Entrez votre mot de passe</div>
+    <input type="password" id="lockPwd" class="lk-input" placeholder="Mot de passe" autofocus>
+    <button class="lk-btn" onclick="checkPwd()">Accéder →</button>
+    <div id="lockErr" class="lk-err"></div>
+  </div>
+</div>
+
+<div class="hdr">
+  <div class="hdr-l">
+    <span style="font-size:1.5rem">📊</span>
+    <div><h1>Bourse Dashboard</h1><small>Trade Republic · Scalable Capital</small></div>
+  </div>
+  <div class="hdr-r">
+    <a href="https://claude.ai/code/artifact/7122c30e-9cf3-420f-83ac-f2d446931a40" class="btn" target="_blank">← Dashboard</a>
+    <a href="about.html" class="btn active">ℹ Méthodologie</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <h2>Comment fonctionne l'analyse</h2>
+  <p class="page-sub">Méthodologie complète — sources, critères de sélection et limites à connaître</p>
+
+  <!-- RÈGLE ABSOLUE -->
+  <div class="rule-box">
+    <div class="ico">⛔</div>
+    <p><strong>Règle absolue — prix réels uniquement.</strong><br>
+    Aucun prix, aucune variation, aucun RSI n'est inventé ou estimé. Chaque chiffre provient d'une recherche web effectuée en temps réel le jour de l'analyse. Si un prix est introuvable, le dashboard affiche <code style="color:var(--yellow)">N/A</code> — jamais un chiffre approximatif.</p>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="section">
+    <div class="section-title">📡 Phase 1 — Scan complet du marché</div>
+    <div class="card">
+      <p>À chaque lancement, <strong>aucune liste d'actions n'est réutilisée</strong>. L'analyse repart de zéro et effectue une série de recherches en direct sur les marchés mondiaux :</p>
+    </div>
+
+    <div class="source-grid">
+      <div class="source-item"><span class="zone">🇪🇺 PEA</span>Gagnants du jour — CAC40, SBF120, DAX, Euronext</div>
+      <div class="source-item"><span class="zone">🇪🇺 PEA</span>Upgrades analystes & résultats trimestriels</div>
+      <div class="source-item"><span class="zone">🇪🇺 PEA</span>Actions sous-évaluées, RSI bas, opportunités rebond</div>
+      <div class="source-item"><span class="zone">🌍 Intl</span>Top gainers NYSE / NASDAQ</div>
+      <div class="source-item"><span class="zone">🌍 Intl</span>Earnings beat, momentum, breakout</div>
+      <div class="source-item"><span class="zone">🌍 Intl</span>Oversold RSI &lt;30, fondamentaux solides</div>
+      <div class="source-item"><span class="zone">📰 Macro</span>Résumé marchés, secteurs chauds du jour</div>
+      <div class="source-item"><span class="zone">📰 Macro</span>Context Bloomberg, CNBC, Reuters</div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="section">
+    <div class="section-title">🔍 Phase 2 — Critères de sélection</div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Catégorie</th>
+            <th>Badge</th>
+            <th>Critères requis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TOP PICKS</td>
+            <td><span class="badge green">Acheter</span></td>
+            <td>Hausse &gt;1.5% sur le jour · volume supérieur à la moyenne · catalyseur clair (upgrade, résultats, news)</td>
+          </tr>
+          <tr>
+            <td>Potentiel long terme</td>
+            <td><span class="badge blue">Long terme</span></td>
+            <td>Croissance CA &gt;15% YoY · avantage concurrentiel durable · valorisation décotée vs pairs · horizon 3–18 mois</td>
+          </tr>
+          <tr>
+            <td>Buy the Dip</td>
+            <td><span class="badge yellow">Buy the Dip</span></td>
+            <td>Baisse récente -5% à -25% · raison temporaire identifiée · RSI &lt;40 · bilan sain, cash-flow positif</td>
+          </tr>
+          <tr>
+            <td>Attendre</td>
+            <td><span class="badge red">Attendre</span></td>
+            <td>Proche du plus haut 52 semaines sans catalyseur · RSI &gt;70 (suracheté) · signal ambigu</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="section">
+    <div class="section-title">💰 Phase 3 — Prix réels par action</div>
+    <div class="card">
+      <p>Pour chaque action retenue en Phase 2, une recherche ciblée est effectuée pour obtenir :</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.75rem">
+        <li style="font-size:.85rem;color:var(--txt2);display:flex;gap:.5rem"><span style="color:var(--blue)">●</span> <span><strong>Prix actuel</strong> — cours du jour en temps réel</span></li>
+        <li style="font-size:.85rem;color:var(--txt2);display:flex;gap:.5rem"><span style="color:var(--blue)">●</span> <span><strong>Variation %</strong> — hausse ou baisse du jour</span></li>
+        <li style="font-size:.85rem;color:var(--txt2);display:flex;gap:.5rem"><span style="color:var(--blue)">●</span> <span><strong>Plus haut / Plus bas 52 semaines</strong> si disponible</span></li>
+        <li style="font-size:.85rem;color:var(--txt2);display:flex;gap:.5rem"><span style="color:var(--blue)">●</span> <span><strong>Cible consensus analystes</strong> si disponible</span></li>
+        <li style="font-size:.85rem;color:var(--txt2);display:flex;gap:.5rem"><span style="color:var(--blue)">●</span> <span><strong>RSI</strong> si disponible</span></li>
+      </ul>
+      <p style="margin-top:.9rem">Le dashboard récupère ensuite ces prix <strong>en direct via Yahoo Finance</strong> à chaque ouverture, pour que les cours soient toujours à jour même si l'analyse date de ce matin.</p>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="section">
+    <div class="section-title">⚙️ Phase 4 — Calculs des cibles et stop-loss</div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Champ</th><th>Calcul</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Prix affiché (sp)</td><td>Prix exact trouvé par WebSearch — jamais inventé</td></tr>
+          <tr><td>Cible (target)</td><td>Consensus analystes si trouvé, sinon sp × 1.15 à 1.25 selon le profil de l'action</td></tr>
+          <tr><td>Stop-loss — Risque faible</td><td>sp × 0.92 (–8%)</td></tr>
+          <tr><td>Stop-loss — Risque modéré</td><td>sp × 0.91 (–9%)</td></tr>
+          <tr><td>Stop-loss — Risque élevé</td><td>sp × 0.90 (–10%)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="section">
+    <div class="section-title">🔗 Sources utilisées</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Zone</th><th>Sources</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>🇪🇺 Europe / PEA</td>
+            <td>Boursorama · ZoneBourse · Les Echos · Investir.fr · Reuters France</td>
+          </tr>
+          <tr>
+            <td>🌍 US / International</td>
+            <td>MarketBeat · Benzinga · CNBC · SeekingAlpha · Morningstar</td>
+          </tr>
+          <tr>
+            <td>📊 Technique</td>
+            <td>TradingView · ChartMill · Yahoo Finance</td>
+          </tr>
+          <tr>
+            <td>🌐 Macro</td>
+            <td>Bloomberg · Reuters · Financial Times</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CONFIANCE -->
+  <div class="section">
+    <div class="section-title">✅ Ce que tu peux vérifier toi-même</div>
+    <div class="trust-grid">
+      <div class="trust-card ok">
+        <div class="trust-title">✅ Points forts</div>
+        <ul>
+          <li><span>●</span>Chaque action a une source citée avec lien direct</li>
+          <li><span>●</span>Les prix affichés sont rechargés en direct via Yahoo Finance</li>
+          <li><span>●</span>Les catalyseurs sont des faits datés issus d'articles réels</li>
+          <li><span>●</span>L'analyse repart de zéro à chaque lancement — pas de biais de liste fixe</li>
+          <li><span>●</span>Les critères de sélection sont explicites et documentés ici</li>
+        </ul>
+      </div>
+      <div class="trust-card warn2">
+        <div class="trust-title">⚠️ Limites à connaître</div>
+        <ul>
+          <li><span>●</span>WebSearch peut retourner des articles décalés de quelques heures</li>
+          <li><span>●</span>Les cibles analystes sont des consensus — pas des certitudes</li>
+          <li><span>●</span>Le RSI est indicatif, pas une règle absolue</li>
+          <li><span>●</span>Si les marchés sont fermés, les cours utilisés sont ceux de la dernière clôture</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTOMATISATION -->
+  <div class="section">
+    <div class="section-title">🤖 Automatisation — 2 analyses par jour en semaine</div>
+    <div class="card" style="margin-bottom:.8rem">
+      <p style="margin-bottom:1rem">Deux agents cloud Claude s'exécutent automatiquement chaque jour de semaine (lundi–vendredi), déclenchés à des horaires choisis selon les cycles professionnels des marchés financiers.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem">
+        <div style="background:var(--bg3);border:1px solid var(--gborder);border-radius:10px;padding:1rem">
+          <div style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:.5rem">🌅 Analyse Pré-Ouverture</div>
+          <div style="font-size:1.5rem;font-weight:900;color:var(--txt);font-family:monospace;margin-bottom:.3rem">8h00</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem">Avant l'ouverture d'Euronext Paris (9h00)</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:.3rem">
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--green)">●</span>Performance marchés asiatiques overnight</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--green)">●</span>Futures US & européens pré-marché</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--green)">●</span>Brent / WTI · Taux obligataires</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--green)">●</span>Calendrier macro du jour</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--green)">●</span>Upgrades analystes & catalyseurs</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--green)">●</span>Top opportunités PEA & US à l'ouverture</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--green)">●</span>Verdict sentiment (haussier / neutre / baissier)</li>
+          </ul>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--pborder);border-radius:10px;padding:1rem">
+          <div style="font-size:.8rem;font-weight:700;color:var(--purple);margin-bottom:.5rem">🌆 Rapport de Clôture</div>
+          <div style="font-size:1.5rem;font-weight:900;color:var(--txt);font-family:monospace;margin-bottom:.3rem">18h00</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-bottom:.75rem">Après la clôture d'Euronext (17h30) · US en séance</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:.3rem">
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--purple)">●</span>Bilan séance CAC40, DAX, Eurostoxx50</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--purple)">●</span>Top 5 gainers & losers Europe + catalyseur</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--purple)">●</span>Faits marquants ayant déplacé les marchés</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--purple)">●</span>Marchés US en cours (S&P500, Nasdaq)</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--purple)">●</span>Résultats publiés après clôture</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--purple)">●</span>Agenda économique & earnings de demain</li>
+            <li style="font-size:.78rem;color:var(--txt2);display:flex;gap:.4rem"><span style="color:var(--purple)">●</span>Opportunités identifiées pour la séance suivante</li>
+          </ul>
+        </div>
+      </div>
+
+      <ul class="steps">
+        <li><div><strong>Les deux analyses s'exécutent dans le cloud Anthropic</strong> (Claude Sonnet 5) — aucun PC requis, même si ta machine est éteinte.</div></li>
+        <li><div><strong>L'agent effectue des recherches WebSearch en temps réel</strong> — aucun prix inventé ou estimé, chaque chiffre est sourcé.</div></li>
+        <li><div><strong>Les résultats sont accessibles sur</strong> <a href="https://claude.ai/code/routines" target="_blank" style="color:var(--blue)">claude.ai/code/routines</a> — les deux rapports y sont archivés après chaque exécution.</div></li>
+        <li><div><strong>Le dashboard (cette page) est mis à jour manuellement</strong> après l'analyse du matin via la commande <code style="color:var(--blue);background:var(--bg3);padding:.1rem .35rem;border-radius:4px">/bourse</code> dans Claude Code.</div></li>
+      </ul>
+
+      <div style="margin-top:1rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:.6rem">🔗 Routines cloud actives</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:.8rem">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <span style="background:var(--gbg);border:1px solid var(--gborder);color:var(--green);border-radius:4px;padding:.08rem .4rem;font-size:.65rem;font-weight:700">ACTIF</span>
+              <span style="color:var(--txt)">Pré-ouverture 8h00</span>
+              <span style="color:var(--muted);font-size:.72rem">Lun–Ven · 6h00 UTC</span>
+            </div>
+            <a href="https://claude.ai/code/routines/trig_01HxaWvAMueLHQMQYrczGJaJ" target="_blank" style="color:var(--blue);font-size:.72rem;text-decoration:none">Voir →</a>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:.8rem">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <span style="background:var(--gbg);border:1px solid var(--gborder);color:var(--green);border-radius:4px;padding:.08rem .4rem;font-size:.65rem;font-weight:700">ACTIF</span>
+              <span style="color:var(--txt)">Post-clôture 18h00</span>
+              <span style="color:var(--muted);font-size:.72rem">Lun–Ven · 16h00 UTC</span>
+            </div>
+            <a href="https://claude.ai/code/routines/trig_01VMCBfNpbNZ1g886dLkitih" target="_blank" style="color:var(--blue);font-size:.72rem;text-decoration:none">Voir →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <strong>⚠️ Avertissement légal :</strong> Les informations présentées dans ce dashboard sont fournies à titre éducatif et informatif uniquement. Elles ne constituent pas un conseil financier ou une recommandation d'investissement. Tous les prix proviennent de sources publiques. Investir en bourse comporte des risques de perte en capital.
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ── AUTH ── */
+const _H='c84403032ee422a05aaee16dbdc66b68c5cb996f4b64c60a15d3d899cee6356f';
+async function _sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function checkPwd(){
+  const v=document.getElementById('lockPwd').value;
+  if(!v)return;
+  const h=await _sha(v);
+  if(h===_H){sessionStorage.setItem('_ba','1');document.getElementById('lockScreen').classList.add('hidden');}
+  else{document.getElementById('lockErr').textContent='Mot de passe incorrect';document.getElementById('lockPwd').value='';document.getElementById('lockPwd').focus();}
+}
+document.getElementById('lockPwd').addEventListener('keydown',e=>{if(e.key==='Enter')checkPwd();document.getElementById('lockErr').textContent='';});
+if(sessionStorage.getItem('_ba')==='1')document.getElementById('lockScreen').classList.add('hidden');
+</script>
+</body>
+</html>
