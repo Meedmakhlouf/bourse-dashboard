@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -17,50 +17,57 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
 
+/* ── VIEWS ── */
+.view{display:none}
+.view.active{display:block;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HEADER ── */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;gap:.75rem;flex-wrap:wrap}
 .hdr-l{display:flex;align-items:center;gap:.6rem}
 .hdr-l h1{font-size:1.1rem;font-weight:600}
 .hdr-l small{font-size:.68rem;color:var(--muted);display:block}
 .hdr-r{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+#dash-controls{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+
+/* ── BUTTONS ── */
+.btn,.nav-btn{background:var(--bg3);border:1px solid var(--border);color:var(--txt2);border-radius:6px;padding:.28rem .75rem;font-size:.72rem;cursor:pointer;transition:.15s}
+.btn:hover,.nav-btn:hover{border-color:var(--blue);color:var(--blue)}
+.nav-btn.active{background:var(--bbg);border-color:var(--blue);color:var(--blue)}
+
+/* ── LIVE PILL ── */
 .live-pill{display:flex;align-items:center;gap:.3rem;border-radius:20px;padding:.2rem .65rem;font-size:.68rem;font-weight:700}
 .live-pill.live{background:var(--gbg);border:1px solid var(--gborder);color:var(--green)}
 .live-pill.static{background:var(--ybg);border:1px solid var(--yborder);color:var(--yellow)}
 .ldot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite}
-.live .ldot{background:var(--green)}
-.static .ldot{background:var(--yellow)}
+.live .ldot{background:var(--green)}.static .ldot{background:var(--yellow)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 #mktBadge{font-size:.7rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.2rem .6rem}
 #lastUpd{font-size:.68rem;color:var(--muted)}
-.btn{background:var(--bg3);border:1px solid var(--border);color:var(--txt2);border-radius:6px;padding:.28rem .75rem;font-size:.72rem;cursor:pointer;transition:.15s}
-.btn:hover{border-color:var(--blue);color:var(--blue)}
 
-/* STATUS BAR */
+/* ── STATUS + FILTERS ── */
 .status-bar{padding:.4rem 1.5rem;font-size:.72rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border)}
 #statusMsg{color:var(--muted)}
 #statusMsg.ok{color:var(--green)}
 #statusMsg.err{color:var(--yellow)}
-
-/* FILTERS */
 .filters{background:var(--bg2);border-bottom:1px solid var(--border);padding:.55rem 1.5rem;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
 .fl{font-size:.72rem;color:var(--txt2)}
 .fbt{background:var(--bg3);border:1px solid var(--border);color:var(--txt2);border-radius:20px;padding:.22rem .7rem;font-size:.7rem;cursor:pointer;transition:.15s}
 .fbt.on{background:var(--bbg);border-color:var(--blue);color:var(--blue)}
 .fsep{width:1px;height:1.1rem;background:var(--border)}
 
+/* ── DASHBOARD LAYOUT ── */
 .wrap{max-width:1440px;margin:0 auto;padding:1.1rem 1.5rem}
-
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.3rem}
 .stat{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
 .stat .sl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.28rem}
 .stat .sv{font-size:1.45rem;font-weight:700}
 .stat .ss{font-size:.67rem;color:var(--txt2);margin-top:.12rem}
-
 .tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.2rem}
 .tab{padding:.6rem 1.25rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--txt2);font-size:.86rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:.4rem;margin-bottom:-1px;transition:color .15s}
 .tab:hover{color:var(--txt)}.tab.on{color:var(--txt);border-bottom-color:var(--blue)}
 .tab .n{background:var(--bg3);border-radius:10px;padding:.07rem .4rem;font-size:.65rem;color:var(--muted)}
 .tc{display:none}.tc.on{display:block}
-
 .sec{margin-bottom:1.3rem}
 .sec-hd{display:flex;align-items:center;justify-content:space-between;padding:.5rem .85rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px 8px 0 0;cursor:pointer;user-select:none}
 .sec-hd:hover{background:#1c2330}
@@ -76,7 +83,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.9rem;display:flex;flex-direction:column;gap:.6rem;transition:border-color .15s,transform .1s}
 .card:hover{border-color:#555;transform:translateY(-1px)}
 .card.hidden{display:none}
-
 .c-top{display:flex;justify-content:space-between;align-items:flex-start}
 .c-ticker{font-size:1.05rem;font-weight:700;font-family:monospace;color:var(--blue)}
 .c-name{font-size:.73rem;color:var(--txt2);margin-top:1px}
@@ -88,59 +94,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .plt{font-size:.6rem;padding:.12rem .4rem;border-radius:4px}
 .ptr{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
 .psc{background:var(--bbg);color:var(--blue);border:1px solid var(--bborder)}
-
-/* ── RECO BADGE ── */
 .reco{border-radius:7px;padding:.55rem .8rem;text-align:center;font-weight:700;font-size:.82rem;letter-spacing:.02em}
-.reco.buy {background:var(--gbg);border:2px solid var(--green); color:var(--green)}
-.reco.dip {background:var(--bbg);border:2px solid var(--blue);  color:var(--blue)}
+.reco.buy{background:var(--gbg);border:2px solid var(--green);color:var(--green)}
+.reco.dip{background:var(--bbg);border:2px solid var(--blue);color:var(--blue)}
 .reco.long{background:var(--pbg);border:2px solid var(--purple);color:var(--purple)}
 .reco.wait{background:var(--ybg);border:2px solid var(--yellow);color:var(--yellow)}
-
-/* ── PRICE — L'ÉLÉMENT LE PLUS IMPORTANT ── */
 .price-block{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}
 .price-main{font-size:2.1rem;font-weight:900;font-family:monospace;line-height:1;letter-spacing:-.01em}
 .price-var{font-size:.9rem;font-weight:700;padding:.1rem .42rem;border-radius:5px}
 .up{color:var(--green);background:var(--gbg)}.dn{color:var(--red);background:var(--rbg)}.neu{color:var(--blue);background:var(--bbg)}
 .price-src{font-size:.62rem;padding:.08rem .35rem;border-radius:3px;font-weight:600}
-.src-live  {background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
+.src-live{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
 .src-static{background:var(--ybg);color:var(--yellow);border:1px solid var(--yborder)}
-
-/* budget */
 .budget{font-size:.65rem;border-radius:4px;padding:.08rem .38rem;display:inline-block}
-.b-ok {background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
-.b-ov {background:var(--rbg);color:var(--red);border:1px solid var(--rborder)}
+.b-ok{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
+.b-ov{background:var(--rbg);color:var(--red);border:1px solid var(--rborder)}
 .b-pot{background:var(--ybg);color:var(--yellow);border:1px solid var(--yborder)}
-
-/* vol */
 .vol{display:flex;align-items:center;gap:.45rem;font-size:.7rem;color:var(--txt2)}
 .vol-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
 .vol-fill{height:100%;border-radius:2px;transition:width .6s}
-
-/* RSI */
 .rsi-wrap{display:flex;flex-direction:column;gap:.18rem}
 .rsi-row{display:flex;justify-content:space-between;font-size:.66rem;color:var(--muted)}
 .rsi-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
 .rsi-fill{height:100%;border-radius:3px;transition:width .6s}
-
-/* info boxes */
 .ibox{border-radius:6px;padding:.5rem .6rem;font-size:.75rem;color:var(--txt2);line-height:1.55;border-left:3px solid var(--blue);background:var(--bg3)}
-.ibox.ired  {border-color:var(--red)}
-.ibox.igreen{border-color:var(--green)}
+.ibox.ired{border-color:var(--red)}.ibox.igreen{border-color:var(--green)}
 .ibox .ilbl{display:block;font-size:.6rem;text-transform:uppercase;font-weight:700;color:var(--blue);margin-bottom:.1rem}
-.ibox.ired   .ilbl{color:var(--red)}
-.ibox.igreen .ilbl{color:var(--green)}
-
-/* sector */
+.ibox.ired .ilbl{color:var(--red)}.ibox.igreen .ilbl{color:var(--green)}
 .sector{font-size:.65rem;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.08rem .38rem;display:inline-block}
-
-/* targets */
 .tgts{display:flex;gap:.35rem}
 .tgt{flex:1;background:var(--bg3);border-radius:6px;padding:.28rem .38rem;text-align:center}
 .tgt .tl{font-size:.57rem;color:var(--muted);text-transform:uppercase}
 .tgt .tv{font-size:.76rem;font-weight:700}
 .tgt.tp .tv{color:var(--green)}.tgt.sl .tv{color:var(--red)}.tgt.hz .tv{color:var(--yellow);font-size:.67rem}
-
-/* sources */
 .sources{margin-top:1.3rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
 .src-hd{padding:.7rem 1.1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:.82rem;font-weight:600}
 .src-hd:hover{background:#1c2330}
@@ -152,52 +138,134 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .sd{width:4px;height:4px;border-radius:50%;background:var(--muted);flex-shrink:0}
 .disc{margin-top:.8rem;padding:.55rem .85rem;background:var(--rbg);border:1px solid var(--rborder);border-radius:7px;font-size:.68rem;color:var(--muted)}
 footer{background:var(--bg2);border-top:1px solid var(--border);padding:.7rem 1.5rem;font-size:.68rem;color:var(--muted);text-align:center;margin-top:1.3rem}
-
 @keyframes flash{0%,100%{opacity:1}50%{opacity:.5}}
 .updated{animation:flash .6s}
 
-@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.src-bd{grid-template-columns:1fr}}
+/* ── GUIDE STYLES ── */
+#view-guide{line-height:1.6}
+#view-guide .g-hero{background:linear-gradient(135deg,#161b22 0%,#0d1117 100%);border-bottom:1px solid var(--border);padding:2.5rem 2rem 2rem;text-align:center}
+#view-guide .g-hero h1{font-size:2rem;font-weight:800;margin-bottom:.6rem}
+#view-guide .g-hero p{color:var(--txt2);font-size:1rem;max-width:600px;margin:0 auto}
+.hero-tags{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1.25rem;flex-wrap:wrap}
+.htag{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:.25rem .75rem;font-size:.75rem;color:var(--txt2)}
+.g-toc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem auto 0;max-width:1000px}
+.g-toc h3{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
+.toc-link{display:flex;align-items:center;gap:.4rem;color:var(--blue);text-decoration:none;font-size:.82rem;padding:.3rem .4rem;border-radius:5px;transition:.12s}
+.toc-link:hover{background:var(--bbg)}
+.toc-link .icon{font-size:.9rem}
+.g-main{max-width:1000px;margin:0 auto;padding:1.5rem 2rem 3rem}
+.g-section{margin-bottom:3.5rem}
+.g-anchor{display:block;height:80px;margin-top:-80px;visibility:hidden}
+.g-section>h2{font-size:1.35rem;font-weight:700;margin-bottom:.4rem;display:flex;align-items:center;gap:.55rem}
+.g-section>.intro{color:var(--txt2);font-size:.9rem;margin-bottom:1.5rem;border-left:3px solid var(--border);padding-left:.85rem}
+.g-divider{height:1px;background:var(--border);margin:3rem 0}
+.ind-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.25rem}
+.ind-header{display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg3)}
+.ind-header .ind-icon{font-size:1.5rem}
+.ind-header h3{font-size:1rem;font-weight:700}
+.ind-header .ind-sub{font-size:.75rem;color:var(--txt2);margin-top:1px}
+.ind-body{padding:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.ind-body.single{grid-template-columns:1fr}
+.ind-desc{font-size:.85rem;color:var(--txt2);line-height:1.65}
+.ind-desc strong{color:var(--txt)}
+.ind-visual{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;flex-direction:column;gap:.55rem}
+.ind-visual .vt{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.1rem}
+.mock-price{font-size:1.8rem;font-weight:900;font-family:monospace}
+.mock-var{font-size:.85rem;font-weight:700;padding:.1rem .4rem;border-radius:5px;display:inline-block}
+.mock-reco{border-radius:7px;padding:.5rem .8rem;text-align:center;font-weight:700;font-size:.82rem}
+.reco-buy{background:var(--gbg);border:2px solid var(--green);color:var(--green)}
+.reco-dip{background:var(--bbg);border:2px solid var(--blue);color:var(--blue)}
+.reco-long{background:var(--pbg);border:2px solid var(--purple);color:var(--purple)}
+.reco-wait{background:var(--ybg);border:2px solid var(--yellow);color:var(--yellow)}
+.mock-risk{font-size:.65rem;font-weight:700;padding:.13rem .42rem;border-radius:4px;text-transform:uppercase;display:inline-block}
+.mock-rsi-track{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:.25rem}
+.mock-rsi-fill{height:100%;border-radius:4px}
+.mock-vol-track{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:.2rem}
+.mock-vol-fill{height:100%;border-radius:3px}
+.mock-tgt{background:var(--bg);border-radius:6px;padding:.35rem .55rem;text-align:center;flex:1}
+.mock-tgt .tl{font-size:.6rem;color:var(--muted);text-transform:uppercase}
+.mock-tgt .tv{font-size:.8rem;font-weight:700}
+.mock-budget{font-size:.68rem;border-radius:4px;padding:.1rem .4rem;display:inline-block}
+.mock-src{font-size:.65rem;border-radius:4px;padding:.08rem .38rem;display:inline-block;font-weight:700}
+.mock-plt{font-size:.65rem;border-radius:4px;padding:.12rem .42rem;display:inline-block}
+.plt-tr{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
+.plt-sc{background:var(--bbg);color:var(--blue);border:1px solid var(--bborder)}
+.val-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.75rem}
+.val-table th{text-align:left;padding:.5rem .65rem;color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.val-table td{padding:.55rem .65rem;border-bottom:1px solid #1c2330;vertical-align:top}
+.val-table tr:last-child td{border-bottom:none}
+.val-table td:first-child{font-weight:700;white-space:nowrap;color:var(--blue)}
+.val-table td:nth-child(2){color:var(--txt2)}
+.g-warn{background:var(--ybg);border:1px solid var(--yborder);border-radius:8px;padding:1rem 1.25rem;font-size:.82rem;color:var(--yellow);margin-top:1rem;line-height:1.6}
+.g-tip{background:var(--gbg);border:1px solid var(--gborder);border-radius:8px;padding:1rem 1.25rem;font-size:.82rem;color:var(--green);margin-top:.75rem;line-height:1.6}
+.g-info{background:var(--bbg);border:1px solid var(--bborder);border-radius:8px;padding:1rem 1.25rem;font-size:.82rem;color:var(--blue);margin-top:.75rem;line-height:1.6}
+.mock-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.9rem;display:flex;flex-direction:column;gap:.6rem;max-width:320px}
+.mock-card-top{display:flex;justify-content:space-between}
+.mock-ticker{font-size:1.05rem;font-weight:700;font-family:monospace;color:var(--blue)}
+.mock-name{font-size:.73rem;color:var(--txt2)}
+.mock-bdgs{display:flex;flex-direction:column;align-items:flex-end;gap:.2rem}
+.mock-ibox{border-radius:6px;padding:.5rem .6rem;font-size:.75rem;color:var(--txt2);line-height:1.5;border-left:3px solid var(--blue);background:var(--bg3)}
+.mock-ibox .ilbl{display:block;font-size:.6rem;text-transform:uppercase;font-weight:700;color:var(--blue);margin-bottom:.1rem}
+.mock-sector{font-size:.65rem;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.08rem .38rem;display:inline-block}
+.mock-tgts{display:flex;gap:.35rem}
+.price-row-mock{display:flex;align-items:baseline;gap:.5rem}
+.g-steps{display:flex;flex-direction:column;gap:1rem;margin-top:.75rem}
+.g-step{display:flex;gap:1rem;align-items:flex-start}
+.g-step-num{background:var(--blue);color:#0d1117;font-weight:800;font-size:.85rem;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.05rem}
+.g-step-content h4{font-size:.9rem;font-weight:600;margin-bottom:.25rem}
+.g-step-content p{font-size:.82rem;color:var(--txt2);line-height:1.6}
+.glossary{display:flex;flex-direction:column;gap:.65rem}
+.gitem{display:flex;gap:1rem;padding:.7rem .9rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.gterm{font-weight:700;font-size:.85rem;color:var(--blue);min-width:120px;flex-shrink:0}
+.gdef{font-size:.82rem;color:var(--txt2);line-height:1.55}
+.filter-demo{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.fbt-demo{border-radius:20px;padding:.22rem .7rem;font-size:.72rem;cursor:default}
+.fbt-on{background:var(--bbg);border:1px solid var(--blue);color:var(--blue)}
+.fbt-off{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+.disc-box{background:var(--rbg);border:1px solid var(--rborder);border-radius:10px;padding:1.25rem 1.5rem;margin-top:2rem}
+.disc-box h3{color:var(--red);font-size:.95rem;margin-bottom:.75rem}
+.disc-box ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.disc-box li{font-size:.82rem;color:var(--txt2);display:flex;gap:.5rem}
+.disc-box li::before{content:'⚠';flex-shrink:0}
+#view-guide footer{padding:.85rem 2rem;margin-top:2rem}
 
-/* ── LOCK SCREEN ── */
-#lockScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0d1117;z-index:9999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-#lockScreen.hidden{display:none}
-.lk-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:340px;text-align:center}
-.lk-icon{font-size:2.5rem;margin-bottom:.8rem}
-.lk-title{font-size:1.1rem;font-weight:600;color:#e6edf3;margin-bottom:.25rem}
-.lk-sub{font-size:.75rem;color:#6e7681;margin-bottom:1.6rem}
-.lk-input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;font-size:1rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;box-sizing:border-box}
-.lk-input:focus{border-color:#58a6ff}
-.lk-btn{width:100%;margin-top:.7rem;background:#238636;border:none;border-radius:8px;color:#fff;font-size:.95rem;font-weight:600;padding:.72rem;cursor:pointer;transition:background .2s}
-.lk-btn:hover{background:#2ea043}
-.lk-err{color:#f85149;font-size:.78rem;margin-top:.65rem;min-height:1.1rem}
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .stats{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}
+  .src-bd{grid-template-columns:1fr}
+  #view-guide .g-hero h1{font-size:1.4rem}
+  #view-guide .g-hero{padding:2rem 1rem}
+  .g-main{padding:1rem}
+  .toc-grid{grid-template-columns:repeat(2,1fr)}
+  .ind-body{grid-template-columns:1fr}
+  .mock-card{max-width:100%}
+}
 </style>
 </head>
 <body>
 
-<div id="lockScreen">
-  <div class="lk-card">
-    <div class="lk-icon">📊</div>
-    <div class="lk-title">Bourse Dashboard</div>
-    <div class="lk-sub">Accès privé — Entrez votre mot de passe</div>
-    <input type="password" id="lockPwd" class="lk-input" placeholder="Mot de passe" autofocus>
-    <button class="lk-btn" onclick="checkPwd()">Accéder →</button>
-    <div id="lockErr" class="lk-err"></div>
-  </div>
-</div>
-
+<!-- SHARED HEADER -->
 <div class="hdr">
   <div class="hdr-l">
     <span style="font-size:1.5rem">📊</span>
     <div><h1>Bourse Dashboard</h1><small>Trade Republic · Scalable Capital</small></div>
   </div>
   <div class="hdr-r">
-    <div class="live-pill static" id="livePill"><span class="ldot"></span><span id="pillTxt">Analyse</span></div>
-    <span id="lastUpd">—</span>
-    <span id="mktBadge">—</span>
-    <button class="btn" onclick="doRefresh()">⟳ Actualiser</button>
-    <a href="https://claude.ai/code/artifact/8feec8e1-6dd1-428b-bc70-eac048ca7910" class="btn" target="_blank">ℹ Méthodologie</a>
+    <div id="dash-controls">
+      <div class="live-pill static" id="livePill"><span class="ldot"></span><span id="pillTxt">Analyse</span></div>
+      <span id="lastUpd">—</span>
+      <span id="mktBadge">—</span>
+      <button class="btn" onclick="doRefresh()">⟳ Actualiser</button>
+    </div>
+    <button class="nav-btn active" data-view="dashboard" onclick="showView('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" data-view="guide" onclick="showView('guide')">📖 Guide</button>
   </div>
 </div>
+
+<!-- ══════════════════════════ DASHBOARD VIEW ══════════════════════════ -->
+<div class="view active" id="view-dashboard">
 
 <div class="status-bar">
   <span>📡 Données :</span>
@@ -268,96 +336,502 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:.7rem 1.
 </div>
 <footer>Analyse du <span id="aDate"></span> · <span id="footerTs"></span></footer>
 
+</div><!-- /view-dashboard -->
+
+<!-- ══════════════════════════ GUIDE VIEW ══════════════════════════ -->
+<div class="view" id="view-guide">
+
+<div class="g-hero">
+  <h1>📊 Comment utiliser le Dashboard</h1>
+  <p>Comprendre chaque indicateur pour prendre de meilleures décisions d'investissement sur Trade Republic et Scalable Capital.</p>
+  <div class="hero-tags">
+    <span class="htag">📋 Débutant</span>
+    <span class="htag">🇪🇺 PEA</span>
+    <span class="htag">🌍 International</span>
+    <span class="htag">📈 Analyse technique</span>
+    <span class="htag">💶 Gestion du risque</span>
+  </div>
+</div>
+
+<div style="padding:0 2rem">
+<div class="g-toc">
+  <h3>Table des matières</h3>
+  <div class="toc-grid">
+    <a href="#vue-ensemble" class="toc-link"><span class="icon">🗺️</span>Vue d'ensemble</a>
+    <a href="#signal-achat" class="toc-link"><span class="icon">🚦</span>Signal d'achat</a>
+    <a href="#prix" class="toc-link"><span class="icon">💰</span>Prix et variation</a>
+    <a href="#budget" class="toc-link"><span class="icon">💶</span>Filtre budget</a>
+    <a href="#rsi" class="toc-link"><span class="icon">📈</span>RSI</a>
+    <a href="#volume" class="toc-link"><span class="icon">📊</span>Volume</a>
+    <a href="#targets" class="toc-link"><span class="icon">🎯</span>Cible et Stop-Loss</a>
+    <a href="#risque" class="toc-link"><span class="icon">🛡️</span>Niveau de risque</a>
+    <a href="#onglets" class="toc-link"><span class="icon">🗂️</span>PEA vs International</a>
+    <a href="#filtres" class="toc-link"><span class="icon">🔍</span>Les filtres</a>
+    <a href="#live" class="toc-link"><span class="icon">📡</span>Prix Live vs Analyse</a>
+    <a href="#glossaire" class="toc-link"><span class="icon">📚</span>Glossaire</a>
+  </div>
+</div>
+</div>
+
+<div class="g-main">
+
+  <!-- VUE D'ENSEMBLE -->
+  <div class="g-section">
+    <span class="g-anchor" id="vue-ensemble"></span>
+    <h2>🗺️ Vue d'ensemble du dashboard</h2>
+    <p class="intro">Le dashboard est organisé en zones distinctes. Voici comment le lire de haut en bas.</p>
+    <div class="g-steps">
+      <div class="g-step"><div class="g-step-num">1</div><div class="g-step-content"><h4>La barre de navigation (en haut, fixe)</h4><p>Affiche le statut des marchés en temps réel (<strong style="color:var(--green)">🟢 Europe ouverte / US ouvert</strong> ou <strong style="color:var(--muted)">⚪ Fermés</strong>), l'heure de la dernière mise à jour, et le bouton <strong>⟳ Actualiser</strong> pour recharger les prix live.</p></div></div>
+      <div class="g-step"><div class="g-step-num">2</div><div class="g-step-content"><h4>La barre de statut</h4><p>Indique si les prix affichés sont en direct depuis Yahoo Finance (<strong style="color:var(--green)">✓ Prix en direct chargés</strong>) ou s'il s'agit des prix de l'analyse (<strong style="color:var(--yellow)">⚠ Live indisponible</strong>). Les prix de l'analyse restent toujours visibles même sans internet.</p></div></div>
+      <div class="g-step"><div class="g-step-num">3</div><div class="g-step-content"><h4>Les filtres rapides</h4><p>Boutons pour afficher uniquement les actions dans ton budget (≤ 200€) et selon le type de recommandation (Acheter / Dip / Long terme / Attendre).</p></div></div>
+      <div class="g-step"><div class="g-step-num">4</div><div class="g-step-content"><h4>Les onglets PEA et International</h4><p><strong style="color:var(--green)">🇪🇺 PEA</strong> = actions européennes à acheter sur <strong>Trade Republic</strong>. <strong style="color:var(--blue)">🌍 International</strong> = actions US/mondiales à acheter sur <strong>Scalable Capital</strong>.</p></div></div>
+      <div class="g-step"><div class="g-step-num">5</div><div class="g-step-content"><h4>Les cartes d'actions</h4><p>Chaque action est représentée par une carte. Elle contient le signal d'achat, le prix actuel, les indicateurs techniques et la stratégie recommandée.</p></div></div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- SIGNAL D'ACHAT -->
+  <div class="g-section">
+    <span class="g-anchor" id="signal-achat"></span>
+    <h2>🚦 Le signal d'achat</h2>
+    <p class="intro">C'est l'indicateur le plus important. Il te dit en un coup d'œil quoi faire avec cette action aujourd'hui.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">🚦</span><div><h3>Badge de recommandation</h3><div class="ind-sub">Affiché en grand dans chaque carte, juste sous le nom de l'action</div></div></div>
+      <div class="ind-body single">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem">
+          <div><div class="mock-reco reco-buy" style="margin-bottom:.75rem">🟢 ACHETER MAINTENANT</div><p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--green)">Signification :</strong> L'action est en hausse aujourd'hui avec un catalyseur clair. C'est le meilleur moment pour entrer selon l'analyse du jour.<br><br><strong style="color:var(--txt)">Que faire :</strong> Tu peux acheter maintenant ou placer un ordre. Ne dépasse pas 5–10% de ton portefeuille sur une seule action.</p></div>
+          <div><div class="mock-reco reco-dip" style="margin-bottom:.75rem">📉 BUY THE DIP — POINT D'ENTRÉE</div><p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--blue)">Signification :</strong> L'action a reculé récemment (-5 à -15%), mais ses fondamentaux restent solides. La baisse est temporaire — c'est une opportunité d'acheter moins cher.<br><br><strong style="color:var(--txt)">Que faire :</strong> Acheter au point d'entrée recommandé. Attends que le RSI soit sous 35 pour confirmer.</p></div>
+          <div><div class="mock-reco reco-long" style="margin-bottom:.75rem">🔭 LONG TERME (3–18 mois)</div><p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--purple)">Signification :</strong> L'action n'est pas forcément en hausse aujourd'hui, mais elle a un fort potentiel sur plusieurs mois. La thèse d'investissement est solide.<br><br><strong style="color:var(--txt)">Que faire :</strong> Tu peux acheter maintenant ou fractionner tes achats sur plusieurs semaines (DCA).</p></div>
+          <div><div class="mock-reco reco-wait" style="margin-bottom:.75rem">🟡 ATTENDRE</div><p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--yellow)">Signification :</strong> Le momentum n'est pas favorable. L'action est peut-être surachetée (RSI > 70) ou le contexte macro est défavorable.<br><br><strong style="color:var(--txt)">Que faire :</strong> Surveille l'action et attends un meilleur point d'entrée. Ne force pas un achat.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- PRIX -->
+  <div class="g-section">
+    <span class="g-anchor" id="prix"></span>
+    <h2>💰 Le prix et la variation du jour</h2>
+    <p class="intro">Le prix est affiché en très grand — c'est le cours actuel de l'action. La variation indique si l'action monte ou descend aujourd'hui.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">💰</span><div><h3>Prix actuel + Variation journalière</h3><div class="ind-sub">Affiché en grand juste sous le badge de recommandation</div></div></div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <strong>Le prix :</strong> c'est combien coûte une action en ce moment.<br><br>
+          <strong>La variation (%) :</strong> c'est l'évolution du prix depuis l'ouverture des marchés ce matin.<br><br>
+          <span style="color:var(--green)">+X% en vert</span> → l'action monte aujourd'hui<br>
+          <span style="color:var(--red)">-X% en rouge</span> → l'action descend aujourd'hui<br><br>
+          <div class="g-tip">💡 Une hausse du jour élevée (+2% et plus) avec un volume fort est un signal positif pour les actions "Acheter maintenant".</div>
+          <div class="g-warn">⚠ La variation quotidienne seule ne suffit pas pour décider. Regarde aussi le RSI et le catalyseur.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemples</div>
+          <div><div style="font-size:.7rem;color:var(--muted);margin-bottom:.3rem">Action en hausse :</div><div class="price-row-mock"><span class="mock-price" style="font-size:1.6rem">175.20€</span><span class="mock-var up">+3.4%</span></div><div style="font-size:.68rem;color:var(--green);margin-top:.2rem">● LIVE</div></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div><div style="font-size:.7rem;color:var(--muted);margin-bottom:.3rem">Action en baisse (Buy the Dip) :</div><div class="price-row-mock"><span class="mock-price" style="font-size:1.6rem">88.40€</span><span class="mock-var dn">-2.3%</span></div><div style="font-size:.68rem;color:var(--green);margin-top:.2rem">● LIVE</div></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div><div style="font-size:.7rem;color:var(--muted);margin-bottom:.3rem">Prix de l'analyse (live indispo) :</div><div class="price-row-mock"><span class="mock-price" style="font-size:1.6rem">203.27$</span><span class="mock-var up">+1.4%</span></div><div style="font-size:.68rem;color:var(--yellow);margin-top:.2rem">📋 Analyse</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- BUDGET -->
+  <div class="g-section">
+    <span class="g-anchor" id="budget"></span>
+    <h2>💶 Le tag budget</h2>
+    <p class="intro">Indique si l'action rentre dans ton budget de 200€ par action, ou si elle le dépasse.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">💶</span><div><h3>Tag budget</h3><div class="ind-sub">Affiché sous le prix, lié au filtre "≤ 200€"</div></div></div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          Tu as fixé un budget de <strong>200€ maximum par action</strong>, sauf exception pour les actions à fort potentiel.<br><br>
+          <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.25rem">
+            <div style="display:flex;align-items:center;gap:.75rem"><span class="mock-budget b-ok">✓ ≤ 200€</span><span style="font-size:.82rem;color:var(--txt2)">L'action rentre dans ton budget — tu peux acheter directement</span></div>
+            <div style="display:flex;align-items:center;gap:.75rem"><span class="mock-budget b-pot">★ > 200€ — Fort potentiel</span><span style="font-size:.82rem;color:var(--txt2)">Plus chère, mais le potentiel justifie l'exception</span></div>
+            <div style="display:flex;align-items:center;gap:.75rem"><span class="mock-budget b-ov">⚠ > 200€</span><span style="font-size:.82rem;color:var(--txt2)">Hors budget — masquée quand le filtre "≤ 200€" est actif</span></div>
+          </div>
+          <div class="g-info">💡 Active le filtre <strong>"💶 ≤ 200€"</strong> en haut de page pour masquer automatiquement toutes les actions hors budget (sauf fort potentiel).</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemple carte avec tag budget</div>
+          <div class="mock-card" style="max-width:100%">
+            <div class="mock-card-top"><div><div class="mock-ticker">TTE</div><div class="mock-name">TotalEnergies SE</div></div><div class="mock-bdgs"><span class="mock-risk rl">🟢 Faible</span><span class="mock-plt plt-tr">✅ Trade Republic</span></div></div>
+            <div class="mock-reco reco-buy">🟢 ACHETER MAINTENANT</div>
+            <div class="price-row-mock"><span class="mock-price" style="font-size:1.6rem">58.80€</span><span class="mock-var up">+1.2%</span><span class="mock-src src-live">● LIVE</span></div>
+            <span class="mock-budget b-ok">✓ ≤ 200€</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- RSI -->
+  <div class="g-section">
+    <span class="g-anchor" id="rsi"></span>
+    <h2>📈 Le RSI — Relative Strength Index</h2>
+    <p class="intro">Le RSI est l'indicateur technique le plus utilisé pour savoir si une action est trop chère (surachetée) ou trop bon marché (survendue).</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">📈</span><div><h3>RSI (14 jours)</h3><div class="ind-sub">Calculé automatiquement à partir de 14 jours d'historique Yahoo Finance</div></div></div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          Le RSI est un chiffre entre <strong>0 et 100</strong>.<br><br>
+          Il mesure la "pression acheteuse" vs la "pression vendeuse" sur les 14 derniers jours.<br><br>
+          <table class="val-table">
+            <thead><tr><th>Valeur RSI</th><th>Signification</th><th>Que faire ?</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--red)">&lt; 30</td><td>🔴 Très survendu</td><td>Signal d'achat fort — rebond probable</td></tr>
+              <tr><td style="color:var(--yellow)">30 – 40</td><td>🟡 Survendu modéré</td><td>Bon point d'entrée pour un Buy the Dip</td></tr>
+              <tr><td style="color:var(--green)">40 – 60</td><td>🟢 Zone neutre</td><td>Ni suracheté ni survendu</td></tr>
+              <tr><td style="color:var(--yellow)">60 – 70</td><td>🟡 Légèrement suracheté</td><td>Prudence — moins d'opportunité</td></tr>
+              <tr><td style="color:var(--red)">&gt; 70</td><td>🟠 Suracheté</td><td>Risque de correction — éviter d'acheter</td></tr>
+            </tbody>
+          </table>
+          <div class="g-warn">⚠ Un RSI bas seul ne suffit pas — vérifie toujours que la raison de la baisse est temporaire.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemples de barres RSI</div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j 🔴 Survendu</span><span style="color:var(--red);font-weight:700">29</span></div><div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:29%;background:var(--red)"></div></div><div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Signal fort : acheter</div></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j 🟡 Faible</span><span style="color:var(--yellow);font-weight:700">36</span></div><div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:36%;background:var(--yellow)"></div></div><div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Bon point d'entrée</div></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j</span><span style="color:var(--green);font-weight:700">52</span></div><div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:52%;background:var(--green)"></div></div><div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Zone neutre</div></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j 🟠 Suracheté</span><span style="color:#f78166;font-weight:700">74</span></div><div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:74%;background:#f78166"></div></div><div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Attendre une correction</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- VOLUME -->
+  <div class="g-section">
+    <span class="g-anchor" id="volume"></span>
+    <h2>📊 Le Volume</h2>
+    <p class="intro">Le volume indique combien d'actions ont été échangées aujourd'hui, comparé à la moyenne habituelle. Il confirme (ou infirme) la force d'un mouvement de prix.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">📊</span><div><h3>Volume vs Moyenne 3 mois</h3><div class="ind-sub">Barres colorées sous le prix — données live uniquement</div></div></div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          Le volume est exprimé en <strong>"X× la moyenne"</strong>. Par exemple, "2.3× la moyenne" signifie que le volume est 2,3 fois supérieur à la normale.<br><br>
+          <table class="val-table">
+            <thead><tr><th>Volume</th><th>Couleur</th><th>Interprétation</th></tr></thead>
+            <tbody>
+              <tr><td>&gt; 1.5×</td><td style="color:var(--green)">Vert</td><td>Fort intérêt — confirme la hausse</td></tr>
+              <tr><td>0.7× – 1.5×</td><td style="color:var(--yellow)">Jaune</td><td>Volume normal — mouvement sans conviction particulière</td></tr>
+              <tr><td>&lt; 0.7×</td><td style="color:var(--red)">Rouge</td><td>Volume faible — signal peu fiable</td></tr>
+            </tbody>
+          </table>
+          <div class="g-tip">💡 Un signal "Acheter maintenant" est beaucoup plus fiable si le volume est élevé (vert).</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemples de volume</div>
+          <div><div style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--txt2)">Vol : <strong style="color:var(--green)">2.3× moy.</strong><div class="mock-vol-track" style="flex:1"><div class="mock-vol-fill" style="width:100%;background:var(--green)"></div></div></div><div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Fort — confirme le signal haussier</div></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div><div style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--txt2)">Vol : <strong style="color:var(--yellow)">1.1× moy.</strong><div class="mock-vol-track" style="flex:1"><div class="mock-vol-fill" style="width:55%;background:var(--yellow)"></div></div></div><div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Normal — signal modérément fiable</div></div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div><div style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--txt2)">Vol : <strong style="color:var(--red)">0.5× moy.</strong><div class="mock-vol-track" style="flex:1"><div class="mock-vol-fill" style="width:25%;background:var(--red)"></div></div></div><div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Faible — méfiance</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- CIBLE & STOP-LOSS -->
+  <div class="g-section">
+    <span class="g-anchor" id="targets"></span>
+    <h2>🎯 Cible de prix et Stop-Loss</h2>
+    <p class="intro">Deux chiffres essentiels : où tu vises pour prendre des bénéfices, et où tu sors pour limiter les pertes.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">🎯</span><div><h3>Cible / Stop-Loss / Horizon</h3><div class="ind-sub">Les 3 piliers en bas de chaque carte</div></div></div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <strong style="color:var(--green)">🟢 Cible :</strong> Prix auquel l'analyste estime que tu devrais vendre pour encaisser tes bénéfices.<br><br>
+          <strong style="color:var(--red)">🔴 Stop-Loss :</strong> Prix en dessous duquel tu devrais vendre pour limiter tes pertes. C'est une limite de sécurité.<br><br>
+          <strong style="color:var(--yellow)">🕐 Horizon :</strong> Durée recommandée pour garder l'action avant de la revendre.<br><br>
+          <table class="val-table">
+            <thead><tr><th>Horizon</th><th>Durée</th></tr></thead>
+            <tbody>
+              <tr><td>Court terme</td><td>Quelques jours à 4 semaines</td></tr>
+              <tr><td>Moyen terme</td><td>1 à 6 mois</td></tr>
+              <tr><td>Long terme</td><td>6 mois à 2 ans</td></tr>
+            </tbody>
+          </table>
+          <div class="g-warn">⚠ Le Stop-Loss est crucial. Sur Trade Republic et Scalable Capital, tu peux placer un ordre Stop-Loss automatique.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemple — carte Airbus (AIR)</div>
+          <div class="mock-card" style="max-width:100%">
+            <div style="font-size:.75rem;color:var(--txt2);margin-bottom:.25rem">Prix actuel : <strong style="color:var(--txt)">175.20€</strong></div>
+            <div class="mock-tgts">
+              <div class="mock-tgt"><div class="tl">Cible</div><div class="tv" style="color:var(--green)">195€ (+11%)</div></div>
+              <div class="mock-tgt"><div class="tl">Stop-Loss</div><div class="tv" style="color:var(--red)">162€ (-7.5%)</div></div>
+              <div class="mock-tgt"><div class="tl">Horizon</div><div class="tv" style="color:var(--yellow);font-size:.72rem">Moyen terme</div></div>
+            </div>
+            <div style="font-size:.75rem;color:var(--txt2);margin-top:.5rem;line-height:1.5">📊 Potentiel gain : <strong style="color:var(--green)">+11%</strong><br>📊 Risque max : <strong style="color:var(--red)">-7.5%</strong><br>📊 Ratio R/R : <strong style="color:var(--blue)">1.47 (favorable)</strong></div>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.5rem;line-height:1.5">Un ratio Gain/Risque > 1 est favorable.<br>Ici 11% / 7.5% = 1.47 → bon trade.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- RISQUE -->
+  <div class="g-section">
+    <span class="g-anchor" id="risque"></span>
+    <h2>🛡️ Le niveau de risque</h2>
+    <p class="intro">Chaque action est classée selon son niveau de risque. Ce badge t'aide à adapter ton investissement à ta tolérance au risque.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">🛡️</span><div><h3>Badge de risque</h3><div class="ind-sub">Affiché en haut à droite de chaque carte</div></div></div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div style="display:flex;align-items:flex-start;gap:.75rem"><span class="mock-risk rl" style="margin-top:.15rem">🟢 Faible</span><div style="font-size:.82rem;color:var(--txt2);line-height:1.6">Société établie, bilan solide, volatilité modérée. Idéal pour commencer ou pour investir une somme importante.<br><em>Exemples : Sanofi, TotalEnergies, Western Digital</em></div></div>
+            <div style="display:flex;align-items:flex-start;gap:.75rem"><span class="mock-risk rm" style="margin-top:.15rem">🟡 Modéré</span><div style="font-size:.82rem;color:var(--txt2);line-height:1.6">Société en croissance, bonne trajectoire mais secteur ou valorisation plus volatils.<br><em>Exemples : ASML, NVIDIA, AMD, Dassault Systèmes</em></div></div>
+            <div style="display:flex;align-items:flex-start;gap:.75rem"><span class="mock-risk rh" style="margin-top:.15rem">🔴 Élevé</span><div style="font-size:.82rem;color:var(--txt2);line-height:1.6">Forte volatilité, secteur spéculatif ou société en retournement.<br><em>À n'investir que 2–5% max du portefeuille</em></div></div>
+          </div>
+          <div class="g-tip">💡 Pour commencer, concentre-toi sur les actions 🟢 Faible risque avec le signal "Acheter maintenant" et un prix ≤ 200€.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Règle d'allocation suggérée</div>
+          <table class="val-table">
+            <thead><tr><th>Risque</th><th>% max du portefeuille</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--green)">🟢 Faible</td><td>Jusqu'à 15–20% par action</td></tr>
+              <tr><td style="color:var(--yellow)">🟡 Modéré</td><td>Jusqu'à 10% par action</td></tr>
+              <tr><td style="color:var(--red)">🔴 Élevé</td><td>2–5% max par action</td></tr>
+            </tbody>
+          </table>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.65rem;line-height:1.6">Ne jamais mettre plus de 20% de son capital sur une seule action, quel que soit le signal.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- ONGLETS -->
+  <div class="g-section">
+    <span class="g-anchor" id="onglets"></span>
+    <h2>🗂️ PEA vs International</h2>
+    <p class="intro">Le dashboard sépare les actions en deux catégories selon leur éligibilité fiscale et la plateforme à utiliser.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">🗂️</span><div><h3>Les deux onglets</h3><div class="ind-sub">À choisir selon où tu veux investir</div></div></div>
+      <div class="ind-body">
+        <div>
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem"><span class="mock-plt plt-tr" style="font-size:.75rem;padding:.2rem .6rem">✅ Trade Republic (PEA)</span></div>
+          <p style="font-size:.82rem;color:var(--txt2);line-height:1.65"><strong style="color:var(--txt)">PEA = Plan d'Épargne en Actions</strong><br>Enveloppe fiscale française très avantageuse. Après 5 ans de détention, les gains sont <strong>exonérés d'impôt sur le revenu</strong> (seulement 17.2% de prélèvements sociaux).<br><br><strong>Qui peut y être :</strong> uniquement les sociétés dont le siège est dans l'UE ou l'EEE (France, Allemagne, Pays-Bas, Espagne, Italie, etc.).<br><br><strong>Exemples :</strong> Airbus, LVMH, ASML, SAP, TotalEnergies, Sanofi, Siemens.</p>
+          <div class="g-tip">💡 Priorité au PEA ! La fiscalité est bien meilleure. Commence par remplir ton PEA avant d'investir sur Scalable Capital.</div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem"><span class="mock-plt plt-sc" style="font-size:.75rem;padding:.2rem .6rem">Scalable Capital</span></div>
+          <p style="font-size:.82rem;color:var(--txt2);line-height:1.65"><strong style="color:var(--txt)">CTO = Compte-Titres Ordinaire</strong><br>Compte classique sans avantage fiscal. Les gains sont imposés à la <strong>flat tax de 30%</strong> (12.8% IR + 17.2% PS).<br><br><strong>Qui y va :</strong> toutes les actions non-éligibles PEA. Principalement les actions US (NYSE, NASDAQ) et asiatiques.<br><br><strong>Exemples :</strong> NVIDIA, AMD, Micron, Alphabet, Airbnb, Western Digital.</p>
+          <div class="g-warn">⚠ Sur Scalable Capital, garde à l'esprit que 30% de tes gains iront aux impôts. Adapte ta cible de rentabilité en conséquence.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- FILTRES -->
+  <div class="g-section">
+    <span class="g-anchor" id="filtres"></span>
+    <h2>🔍 Les filtres</h2>
+    <p class="intro">Les filtres en haut de page te permettent d'afficher uniquement les actions qui correspondent à ta stratégie du moment.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">🔍</span><div><h3>Barre de filtres</h3><div class="ind-sub">Cliquer sur un bouton l'active (bleu) ou le désactive (gris)</div></div></div>
+      <div class="ind-body single">
+        <div class="filter-demo">
+          <span style="font-size:.75rem;color:var(--txt2)">Filtres :</span>
+          <button class="fbt-demo fbt-on">💶 ≤ 200€</button>
+          <button class="fbt-demo fbt-on">🟢 Acheter</button>
+          <button class="fbt-demo fbt-off">📉 Buy the Dip</button>
+          <button class="fbt-demo fbt-off">🔭 Long terme</button>
+          <button class="fbt-demo fbt-on">🟡 Attendre</button>
+        </div>
+        <p style="font-size:.78rem;color:var(--txt2);margin-bottom:1rem">Dans cet exemple : seules les actions ≤ 200€ avec signal "Acheter" ou "Attendre" sont affichées.</p>
+        <table class="val-table">
+          <thead><tr><th>Filtre</th><th>Ce qu'il fait</th><th>Quand l'utiliser ?</th></tr></thead>
+          <tbody>
+            <tr><td>💶 ≤ 200€</td><td>Masque les actions qui coûtent plus de 200€ (sauf fort potentiel)</td><td>Toujours actif par défaut selon ton budget</td></tr>
+            <tr><td>🟢 Acheter</td><td>Affiche les actions avec signal "Acheter maintenant"</td><td>Quand tu veux investir aujourd'hui</td></tr>
+            <tr><td>📉 Buy the Dip</td><td>Affiche les actions en baisse à acheter</td><td>Quand tu cherches un prix d'entrée réduit</td></tr>
+            <tr><td>🔭 Long terme</td><td>Affiche les actions à potentiel sur plusieurs mois</td><td>Pour construire un portefeuille long terme</td></tr>
+            <tr><td>🟡 Attendre</td><td>Affiche les actions déconseillées aujourd'hui</td><td>Pour surveiller ce qu'il faut éviter maintenant</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- LIVE -->
+  <div class="g-section">
+    <span class="g-anchor" id="live"></span>
+    <h2>📡 Prix Live vs Prix Analyse</h2>
+    <p class="intro">Le dashboard essaie de charger les prix en direct depuis Yahoo Finance. Si ce n'est pas possible, il affiche les prix de la dernière analyse /bourse.</p>
+    <div class="ind-card">
+      <div class="ind-header"><span class="ind-icon">📡</span><div><h3>Indicateur de fraîcheur des données</h3><div class="ind-sub">Visible sur chaque carte et dans la barre de statut</div></div></div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem"><span class="mock-src src-live">● LIVE</span><span style="font-size:.82rem;font-weight:600">Prix en direct</span></div><p style="font-size:.82rem;color:var(--txt2);line-height:1.6">Le prix vient d'être récupéré depuis Yahoo Finance. C'est le cours actuel du marché. Ces données se rafraîchissent automatiquement toutes les 5 minutes.</p></div>
+            <div><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem"><span class="mock-src src-static">📋 Analyse</span><span style="font-size:.82rem;font-weight:600">Prix de l'analyse</span></div><p style="font-size:.82rem;color:var(--txt2);line-height:1.6">Le prix live n'a pas pu être chargé. Le prix affiché est celui de la dernière exécution du skill /bourse. Il peut être légèrement décalé mais reste une bonne référence.</p></div>
+          </div>
+          <div class="g-info">💡 Si les prix live ne chargent pas, clique sur "⟳ Actualiser". Si ça persiste, vérifie ta connexion internet.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Barre de statut — ce que tu vois</div>
+          <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.8rem">
+            <div style="background:var(--gbg);border:1px solid var(--gborder);border-radius:6px;padding:.5rem .75rem;color:var(--green)">✓ Prix en direct chargés — 13 actions</div>
+            <div style="background:var(--ybg);border:1px solid var(--yborder);border-radius:6px;padding:.5rem .75rem;color:var(--yellow)">⚠ Live indisponible — cache de 12 min affiché.</div>
+            <div style="background:var(--ybg);border:1px solid var(--yborder);border-radius:6px;padding:.5rem .75rem;color:var(--yellow)">⚠ Live indisponible — prix de l'analyse affichés (📋 Analyse).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="g-divider"></div>
+
+  <!-- GLOSSAIRE -->
+  <div class="g-section">
+    <span class="g-anchor" id="glossaire"></span>
+    <h2>📚 Glossaire des termes</h2>
+    <p class="intro">Tous les termes financiers utilisés dans le dashboard expliqués simplement.</p>
+    <div class="glossary">
+      <div class="gitem"><div class="gterm">RSI</div><div class="gdef">Relative Strength Index. Indicateur technique (0–100) qui mesure si une action est survendue (&lt; 30, opportunité d'achat) ou surachetée (&gt; 70, risque de correction).</div></div>
+      <div class="gitem"><div class="gterm">Stop-Loss</div><div class="gdef">Ordre de vente automatique déclenché si le prix descend sous un seuil défini. Permet de limiter ses pertes. Exemple : Stop-Loss à -7% signifie que tu vends si l'action perd 7%.</div></div>
+      <div class="gitem"><div class="gterm">Cible de prix</div><div class="gdef">Prix auquel l'analyste recommande de vendre pour encaisser les bénéfices. Basé sur l'analyse fondamentale et technique.</div></div>
+      <div class="gitem"><div class="gterm">Catalyseur</div><div class="gdef">Événement spécifique qui justifie l'achat aujourd'hui : résultats trimestriels, upgrade analyste, annonce de contrat, lancement de produit...</div></div>
+      <div class="gitem"><div class="gterm">Buy the Dip</div><div class="gdef">Stratégie qui consiste à acheter une action quand elle a baissé temporairement, pariant sur un rebond. Fonctionne si les fondamentaux restent solides.</div></div>
+      <div class="gitem"><div class="gterm">Momentum</div><div class="gdef">Force de la tendance actuelle d'une action. Un fort momentum haussier signifie que l'action monte depuis plusieurs jours avec un volume élevé.</div></div>
+      <div class="gitem"><div class="gterm">PEA</div><div class="gdef">Plan d'Épargne en Actions. Enveloppe fiscale française permettant d'investir dans des actions européennes avec une fiscalité réduite après 5 ans (exonération d'IR).</div></div>
+      <div class="gitem"><div class="gterm">CTO</div><div class="gdef">Compte-Titres Ordinaire. Compte d'investissement classique sans avantage fiscal. Les gains sont taxés à 30% (flat tax). Utilisé pour les actions non-éligibles PEA (US, Asie).</div></div>
+      <div class="gitem"><div class="gterm">P/E ratio</div><div class="gdef">Price-to-Earnings. Rapport entre le prix de l'action et le bénéfice par action. Un P/E faible vs le secteur peut indiquer une action sous-évaluée.</div></div>
+      <div class="gitem"><div class="gterm">DCA</div><div class="gdef">Dollar Cost Averaging. Stratégie d'investissement régulier (ex : 50€/mois sur la même action) pour lisser le prix d'achat moyen et réduire le risque de mauvais timing.</div></div>
+      <div class="gitem"><div class="gterm">Upgrade analyste</div><div class="gdef">Un analyste financier (Goldman Sachs, Morgan Stanley...) revoit à la hausse sa recommandation sur une action. C'est un catalyseur positif fort.</div></div>
+      <div class="gitem"><div class="gterm">Ratio R/R</div><div class="gdef">Ratio Risque/Rendement. Calcul : potentiel gain / risque de perte. Un ratio > 1 est favorable. Exemple : cible +11% / stop-loss -7.5% = ratio 1.47.</div></div>
+      <div class="gitem"><div class="gterm">Flat tax</div><div class="gdef">Prélèvement forfaitaire unique de 30% (12.8% IR + 17.2% prélèvements sociaux) appliqué sur les gains d'un CTO en France.</div></div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disc-box">
+    <h3>⚠️ Avertissements importants</h3>
+    <ul>
+      <li>Ce dashboard est un outil d'analyse à titre éducatif uniquement. Il ne constitue pas un conseil financier personnalisé.</li>
+      <li>Les recommandations sont basées sur une analyse technique et fondamentale au moment de l'exécution du skill /bourse. Elles peuvent être erronées.</li>
+      <li>Tout investissement comporte un risque de perte en capital. Tu peux perdre tout ou partie de ton investissement.</li>
+      <li>L'éligibilité PEA d'une action doit toujours être vérifiée auprès de ton courtier (Trade Republic) avant d'investir.</li>
+      <li>Les prix live sont fournis par Yahoo Finance via un proxy public et peuvent présenter un léger décalage par rapport au marché réel.</li>
+      <li>Consulte un conseiller financier agréé avant de prendre toute décision d'investissement significative.</li>
+    </ul>
+  </div>
+
+</div><!-- /g-main -->
+<footer>Guide du Dashboard · <a href="#" onclick="event.preventDefault();showView('dashboard')" style="color:var(--blue);text-decoration:none">← Retour au Dashboard</a></footer>
+
+</div><!-- /view-guide -->
+
 <script>
-/* ── AUTH ── */
-const _H='c84403032ee422a05aaee16dbdc66b68c5cb996f4b64c60a15d3d899cee6356f';
-async function _sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-async function checkPwd(){
-  const v=document.getElementById('lockPwd').value;
-  if(!v)return;
-  const h=await _sha(v);
-  if(h===_H){sessionStorage.setItem('_ba','1');document.getElementById('lockScreen').classList.add('hidden');}
-  else{document.getElementById('lockErr').textContent='Mot de passe incorrect';document.getElementById('lockPwd').value='';document.getElementById('lockPwd').focus();}
+/* ── VIEW SWITCHING ── */
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
+  document.getElementById('dash-controls').style.display=name==='dashboard'?'flex':'none';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-document.getElementById('lockPwd').addEventListener('keydown',e=>{if(e.key==='Enter')checkPwd();document.getElementById('lockErr').textContent='';});
-if(sessionStorage.getItem('_ba')==='1')document.getElementById('lockScreen').classList.add('hidden');
 
 /* ════════════════════════════════════════════
    DONNÉES — met à jour après chaque /bourse
-   ────────────────────────────────────────────
-   sp  = staticPrice (prix de la dernière analyse)
-   sv  = staticVar   (variation au moment de l'analyse)
-   sc  = staticCur   ('€' ou '$')
-   hp  = highPotential (true = affiché même si > 200€)
-   mp  = maxPrice (pour filtre budget quand live indispo)
-   reco: 'buy' | 'dip' | 'long' | 'wait'
 ════════════════════════════════════════════ */
-const DATE_ANALYSE = "5 juillet 2026";
+const DATE_ANALYSE = "26 juin 2026";
 
 const STOCKS = {
  pea:{
   topPicks:[
-   {yt:'GLE.PA', dt:'GLE', name:'Société Générale SA',
-    bourse:'Euronext Paris', secteur:'Banque / Services Financiers',
-    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:78,
-    sp:77.34, sv:'-0.23%', sc:'€',
-    catalyst:'Momentum exceptionnel : +114.88% sur 1 an, +32.07% sur 6 mois. Citi relève target à 90€ (depuis 84€). Secteur bancaire européen dopé par maintien des taux BCE et retour du crédit corporate. Near 52-week high 79.07€.',
-    target:'90€ (+16.4%)', sl:'70.38€ (-9.0%)', horizon:'6-12 mois'},
-   {yt:'ELIS.PA', dt:'ELIS', name:'Elis SA',
-    bourse:'Euronext Paris', secteur:'Services / Blanchisserie Industrielle',
-    reco:'buy', risque:'low', rl:'Faible', hp:false, mp:28,
-    sp:27.42, sv:'+1.86%', sc:'€',
-    catalyst:'Seul titre SBF120 avec 16 analystes sur 16 à l\'achat (100% Buy consensus). EcoVadis Platine 92/100. Near plus haut annuel (28.06€) avec momentum acheteur soutenu. Modèle récurrent défensif.',
-    target:'33.45€ (+22.0%)', sl:'25.23€ (-8.0%)', horizon:'6-12 mois'},
+   {yt:'STMPA.PA', dt:'STM', name:'STMicroelectronics N.V.',
+    bourse:'Euronext Paris', secteur:'Semi-conducteurs / Composants IA & Data Centers',
+    reco:'buy', risque:'low', rl:'Faible', hp:false, mp:67,
+    sp:66.13, sv:'+4.3%', sc:'€',
+    catalyst:'Effet Micron : beat massif Q3 (+24% EPS) relance tous les semis européens. STMicro +4.3% le 25 juin. Objectifs revenus data centers doublés. +187% YTD. Cible haute analystes 87.50€.',
+    target:'87.50€ (+32.3%)', sl:'60.84€ (-8.0%)', horizon:'6–12 mois'},
+   {yt:'ASML.AS', dt:'ASML', name:'ASML Holding N.V.',
+    bourse:'Euronext Amsterdam', secteur:'Équipements semi-conducteurs / EUV',
+    reco:'buy', risque:'moderate', rl:'Modéré', hp:true, mp:1624,
+    sp:1623.40, sv:'+4.48%', sc:'€',
+    catalyst:'Chaque puce IA mondiale passe par les machines ASML. Effet Micron direct +4.48%. Strong Buy ×38 analystes. BNP Paribas target 1950€, BofA 1921€, JPMorgan 1900€.',
+    target:'1900€ (+17.1%)', sl:'1477€ (-9.0%)', horizon:'6–12 mois'},
   ],
   potential:[
+   {yt:'SOI.PA', dt:'SOI', name:'Soitec SA',
+    bourse:'Euronext Paris', secteur:'Matériaux semi-conducteurs / SOI wafers',
+    reco:'long', risque:'moderate', rl:'Modéré', hp:false, mp:113,
+    sp:112.25, sv:'+4.61%', sc:'€',
+    catalyst:'Fournisseur critique de wafers SOI pour TSMC, Intel, Samsung. +403% YTD mais -44% sous son ATH 200.50€. Cible analystes 137.58€ (+22.6%).',
+    target:'137.58€ (+22.6%)', sl:'102.15€ (-9.0%)', horizon:'12–18 mois'},
    {yt:'DEME.BR', dt:'DEME', name:'DEME Group NV',
-    bourse:'Euronext Bruxelles', secteur:'Offshore / Dragage & Câbles Sous-marins',
-    reco:'long', risque:'low', rl:'Faible', hp:false, mp:181,
-    sp:180.40, sv:'-0.11%', sc:'€',
-    catalyst:'Leader mondial dragage maritime, éolien offshore et câbles sous-marins pour data centers IA. P/E 13.17 = valorisation très raisonnable. Analystes unanimes à l\'achat, max target 240€. Infrastructure critique IA & transition énergétique.',
-    target:'240€ (+33.1%)', sl:'165.97€ (-8.0%)', horizon:'12-18 mois'},
+    bourse:'Euronext Bruxelles', secteur:'Dragage & Offshore / Infrastructure maritime',
+    reco:'long', risque:'low', rl:'Faible', hp:false, mp:179,
+    sp:179.00, sv:'N/A', sc:'€',
+    catalyst:'Consensus analystes unanimement positif. Max target 240€ (+34%). Leader dragage maritime, éolien offshore, câbles sous-marins pour data centers IA.',
+    target:'240€ (+34.1%)', sl:'164.68€ (-8.0%)', horizon:'12–18 mois'},
   ],
-  dip:[]
+  dip:[
+   {yt:'MC.PA', dt:'MC', name:'LVMH SE',
+    bourse:'Euronext Paris', secteur:'Luxe & Mode',
+    reco:'dip', risque:'moderate', rl:'Modéré', hp:true, mp:493,
+    sp:493.00, sv:'N/A', sc:'€',
+    raisonBaisse:'Ralentissement consommation luxe Chine, incertitudes macro US, rotation sectorielle. -24.7% depuis ATH 52S à 654.70€. Aucun profit warning.',
+    fondamentaux:'Empire 75 Maisons de luxe. Marges opérationnelles >20%. 17 analystes Buy, 0 vente. Dividende 2.8%. Cash-flow libre record. Cible consensus 576.62€.',
+    catalyst:'Point d\'entrée rare sur LVMH. Correction cyclique (pas structurelle). Reprise demande chinoise attendue H2 2026. +17% d\'upside vers la cible consensus.',
+    target:'576.62€ (+17.0%)', sl:'448.63€ (-9.0%)', horizon:'6–12 mois'},
+  ]
  },
  international:{
   topPicks:[
-   {yt:'UNH', dt:'UNH', name:'UnitedHealth Group',
-    bourse:'NYSE', secteur:'Santé / Assurance Médicale',
-    reco:'buy', risque:'moderate', rl:'Modéré', hp:true, mp:425,
-    sp:424.16, sv:'+0.5%', sc:'$',
-    catalyst:'+65% depuis le plus bas 2026. Résultats Q2 le 16 juillet = catalyseur immédiat. Secteur santé US en forte hausse (HUM +142% YTD). Near 52-week high $430.20. P/E 32, dividende 2.1%.',
-    target:'500.51$ (+18.0%)', sl:'385.99$ (-9.0%)', horizon:'3-6 mois'},
-   {yt:'AVAV', dt:'AVAV', name:'AeroVironment Inc.',
-    bourse:'NASDAQ', secteur:'Défense / Drones & Contre-drones',
-    reco:'buy', risque:'high', rl:'Élevé', hp:false, mp:191,
-    sp:190.89, sv:'N/A', sc:'$',
-    catalyst:'Contrat Army 500M$ signé le 3 juillet (système anti-drone Titan RF). Beat massif Q4 : revenue +133% YoY, EPS $1.84 vs attentes. Avg target analystes : $258.61 (+35.5%). 18 analystes Buy.',
-    target:'258.61$ (+35.5%)', sl:'171.80$ (-10.0%)', horizon:'6-12 mois'},
+   {yt:'MU', dt:'MU', name:'Micron Technology Inc.',
+    bourse:'NASDAQ', secteur:'Semi-conducteurs / Mémoire HBM & IA',
+    reco:'buy', risque:'high', rl:'Élevé', hp:true, mp:1224,
+    sp:1223.31, sv:'N/A', sc:'$',
+    catalyst:'Beat massif Q3 FY2026 : EPS 25.11$ (+24%), CA 41.46Md$ (+28%). Guidance Q4 ~50Md$ (×4.5 vs an dernier !). HBM sold-out. Cap. >1 trillion$. Analystes relèvent targets 1600–2200$.',
+    target:'$1600 (+30.8%)', sl:'$1101 (-10.0%)', horizon:'3–6 mois'},
+   {yt:'QCOM', dt:'QCOM', name:'QUALCOMM Incorporated',
+    bourse:'NASDAQ', secteur:'Semi-conducteurs / Diversification IA & Data Centers',
+    reco:'buy', risque:'moderate', rl:'Modéré', hp:true, mp:207,
+    sp:206.96, sv:'N/A', sc:'$',
+    catalyst:'Investor Day 24 juin : revenus non-handset relevés à 40Md$ d\'ici FY2029, dont 15Md$+ data center IA. Premières livraisons ASIC custom hyperscaler fin 2026. +10% le 25 juin.',
+    target:'$248 (+19.8%)', sl:'$188 (-9.1%)', horizon:'6–12 mois'},
   ],
   potential:[
-   {yt:'INTC', dt:'INTC', name:'Intel Corporation',
-    bourse:'NASDAQ', secteur:'Semi-conducteurs / CPU & Foundry IA',
-    reco:'long', risque:'moderate', rl:'Modéré', hp:false, mp:121,
-    sp:120.35, sv:'N/A', sc:'$',
-    catalyst:'HSBC relève target à $200 (+66%). Citi $130, Benchmark $140. CPU, chip packaging et fonderie = 3 moteurs IA. Transition vers IA foundry en cours. Jim Cramer : "standout tech winner du trimestre". Consensus Hold mais outliers très bullish.',
-    target:'140$ (+16.3%)', sl:'109.52$ (-9.0%)', horizon:'12-18 mois'},
-   {yt:'NVO', dt:'NVO', name:'Novo Nordisk A/S',
-    bourse:'NYSE', secteur:'Santé / GLP-1 & Obésité',
-    reco:'long', risque:'moderate', rl:'Modéré', hp:false, mp:51,
-    sp:50.43, sv:'+3.4%', sc:'$',
-    catalyst:'Medicare démarre la couverture des médicaments anti-obésité le 1er juillet 2026. TAM Ozempic/Wegovy multiplié ×3. Leader GLP-1 mondial (65%+ PDM). -30% sous ATH $71.80 = point d\'entrée sur tendance structurelle décennale.',
-    target:'63.20$ (+25.3%)', sl:'45.89$ (-9.0%)', horizon:'6-12 mois'},
+   {yt:'MSFT', dt:'MSFT', name:'Microsoft Corporation',
+    bourse:'NASDAQ', secteur:'Cloud / IA Enterprise',
+    reco:'long', risque:'low', rl:'Faible', hp:true, mp:366,
+    sp:365.46, sv:'N/A', sc:'$',
+    catalyst:'-32% depuis ATH oct. 2025 (538.66$). Fondamentaux intacts : CA +18% YoY, EPS +21%, Azure +29%. Cible consensus 528.88$ (+44.7%). Strong Buy.',
+    target:'$528.88 (+44.7%)', sl:'$336.22 (-8.0%)', horizon:'12–18 mois'},
   ],
   dip:[
-   {yt:'MRVL', dt:'MRVL', name:'Marvell Technology Inc.',
-    bourse:'NASDAQ', secteur:'Semi-conducteurs / Custom Silicon IA',
-    reco:'dip', risque:'high', rl:'Élevé', hp:true, mp:273,
-    sp:272.05, sv:'N/A', sc:'$',
-    raisonBaisse:'Prise de bénéfices après +45% de rallye IA en Q2. -17.5% depuis l\'ATH du 4 juin ($329.88). Rotation tactique des investisseurs — pas de détérioration fondamentale.',
-    fondamentaux:'Champion du custom silicon IA pour hyperscalers (AWS, Google, Microsoft). +200% sur le trimestre. Cantor Fitzgerald relève target à $300. Backlog solide sur ASIC custom.',
-    catalyst:'Point d\'entrée sur un leader IA après correction technique. Cantor target $300 (+10.3%). AI custom silicon = marché en croissance structurelle.',
-    target:'300$ (+10.3%)', sl:'244.85$ (-10.0%)', horizon:'3-6 mois'},
+   {yt:'AAPL', dt:'AAPL', name:'Apple Inc.',
+    bourse:'NASDAQ', secteur:'Technologie / Écosystème Mobile & Services',
+    reco:'dip', risque:'moderate', rl:'Modéré', hp:true, mp:276,
+    sp:275.42, sv:'-6.0%', sc:'$',
+    raisonBaisse:'Annonce de hausses de prix iPhone, Mac et iPad le 25 juin 2026. Marché craint une compression des volumes. -6% en une séance. -12.6% depuis ATH 315.20$.',
+    fondamentaux:'Écosystème fermé incomparable. Services en forte croissance structurelle (App Store, iCloud). Rachats massifs en cours. +45.81% sur 1 an.',
+    catalyst:'Réaction de -6% disproportionnée. Hausse prix = amélioration des marges à long terme. Point d\'entrée attractif sous 280$.',
+    target:'$325 (+18.0%)', sl:'$251 (-9.0%)', horizon:'3–6 mois'},
+   {yt:'BB', dt:'BB', name:'BlackBerry Limited',
+    bourse:'NYSE', secteur:'Logiciels / QNX Automotive & Physical AI',
+    reco:'dip', risque:'high', rl:'Élevé', hp:false, mp:9,
+    sp:8.79, sv:'N/A', sc:'$',
+    raisonBaisse:'Pullback post-résultats Q1 FY2027 (25 juin) depuis le pic >10$. Légère prise de bénéfices sur petite cap volatile.',
+    fondamentaux:'Revenue +26% YoY. 5ème trimestre consécutif GAAP profitable. Backlog QNX 950M$. +133% YTD. QNX = OS temps réel certifié sécurité pour robotique, automotive, Physical AI.',
+    catalyst:'QNX est le goulot d\'étranglement critique du Physical AI. CIBC relève target à 10$. Dip post-earnings = point d\'entrée sur un turnaround validé par 5 trimestres de profits.',
+    target:'$10.00 (+13.8%)', sl:'$7.91 (-10.0%)', horizon:'3–6 mois'},
   ]
  }
 };
@@ -388,65 +862,40 @@ function applyFilters(){
 /* ════════════════════════════════════════════
    FETCH LIVE YAHOO FINANCE
 ════════════════════════════════════════════ */
-function fetchTO(url, ms=8000){
+function fetchTO(url,ms=8000){
   const ctrl=new AbortController();
   const tid=setTimeout(()=>ctrl.abort(),ms);
   return fetch(url,{signal:ctrl.signal}).finally(()=>clearTimeout(tid));
 }
-
 async function tryFetch(rawUrl){
   const enc=encodeURIComponent(rawUrl);
-  // Proxy 1 : allorigins /get
-  try{
-    const r=await fetchTO(`https://api.allorigins.win/get?url=${enc}`,10000);
-    if(r.ok){const d=await r.json();if(d.contents){return JSON.parse(d.contents);}}
-  }catch{}
-  // Proxy 2 : corsproxy.io
-  try{
-    const r=await fetchTO(`https://corsproxy.io/?${enc}`,10000);
-    if(r.ok) return await r.json();
-  }catch{}
-  // Proxy 3 : codetabs
-  try{
-    const r=await fetchTO(`https://api.codetabs.com/v1/proxy?quest=${enc}`,10000);
-    if(r.ok) return await r.json();
-  }catch{}
-  // Direct (works in Firefox/some Chromium)
-  try{
-    const r=await fetchTO(rawUrl,6000);
-    if(r.ok) return await r.json();
-  }catch{}
+  try{const r=await fetchTO(`https://api.allorigins.win/get?url=${enc}`,10000);if(r.ok){const d=await r.json();if(d.contents)return JSON.parse(d.contents);}}catch{}
+  try{const r=await fetchTO(`https://corsproxy.io/?${enc}`,10000);if(r.ok)return await r.json();}catch{}
+  try{const r=await fetchTO(`https://api.codetabs.com/v1/proxy?quest=${enc}`,10000);if(r.ok)return await r.json();}catch{}
+  try{const r=await fetchTO(rawUrl,6000);if(r.ok)return await r.json();}catch{}
   return null;
 }
-
 async function fetchQuotes(tickers){
-  // Essaie query1 puis query2
   for(const host of ['query2','query1']){
     const url=`https://${host}.finance.yahoo.com/v7/finance/quote?symbols=${tickers.join(',')}&lang=fr&region=FR`;
     const data=await tryFetch(url);
     const res=data?.quoteResponse?.result;
-    if(res && res.length>0){
-      const map={};
-      for(const q of res) map[q.symbol]=q;
-      return map;
-    }
+    if(res&&res.length>0){const map={};for(const q of res)map[q.symbol]=q;return map;}
   }
   return {};
 }
-
 async function fetchHistory(ticker){
   for(const host of ['query2','query1']){
     const url=`https://${host}.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1mo`;
     const data=await tryFetch(url);
     const closes=data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close??[];
     const clean=closes.filter(c=>c!=null);
-    if(clean.length>10) return clean;
+    if(clean.length>10)return clean;
   }
   return [];
 }
-
 function calcRSI(closes,n=14){
-  if(closes.length<n+1) return null;
+  if(closes.length<n+1)return null;
   const s=closes.slice(-(n+1));
   let g=0,l=0;
   for(let i=1;i<s.length;i++){const d=s[i]-s[i-1];d>0?g+=d:l-=d;}
@@ -458,83 +907,56 @@ function calcRSI(closes,n=14){
    RENDERING
 ════════════════════════════════════════════ */
 const RECO={
-  buy: {cls:'buy', icon:'🟢', txt:'ACHETER MAINTENANT'},
-  dip: {cls:'dip', icon:'📉', txt:'BUY THE DIP — POINT D\'ENTRÉE'},
-  long:{cls:'long',icon:'🔭', txt:'LONG TERME (3–18 mois)'},
-  wait:{cls:'wait',icon:'🟡', txt:'ATTENDRE'},
+  buy:{cls:'buy',icon:'🟢',txt:'ACHETER MAINTENANT'},
+  dip:{cls:'dip',icon:'📉',txt:'BUY THE DIP — POINT D\'ENTRÉE'},
+  long:{cls:'long',icon:'🔭',txt:'LONG TERME (3–18 mois)'},
+  wait:{cls:'wait',icon:'🟡',txt:'ATTENDRE'},
 };
-
 function recoHtml(r){const c=RECO[r]||RECO.wait;return `<div class="reco ${c.cls}">${c.icon} ${c.txt}</div>`;}
-
-function priceBlock(s, liveQ, isLive){
-  let p, v, cls;
-  if(isLive && liveQ){
-    p=liveQ.regularMarketPrice;
-    const pct=liveQ.regularMarketChangePercent;
-    v=pct!=null?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—';
-    cls=pct==null?'neu':pct>=0?'up':'dn';
+function priceBlock(s,liveQ,isLive){
+  if(isLive&&liveQ){
+    const p=liveQ.regularMarketPrice,pct=liveQ.regularMarketChangePercent;
+    const v=pct!=null?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—';
+    const cls=pct==null?'neu':pct>=0?'up':'dn';
     const cur=liveQ.currency==='EUR'?'€':'$';
-    return `<div class="price-block" id="pb-${s.yt.replace('.','_')}">
-      <span class="price-main">${p!=null?p.toFixed(2)+cur:'—'}</span>
-      <span class="price-var ${cls}">${v}</span>
-      <span class="price-src src-live">● LIVE</span>
-    </div>`;
+    return `<div class="price-block" id="pb-${s.yt.replace('.','_')}"><span class="price-main">${p!=null?p.toFixed(2)+cur:'—'}</span><span class="price-var ${cls}">${v}</span><span class="price-src src-live">● LIVE</span></div>`;
   }
-  // Static price (always visible)
-  cls=s.sv.startsWith('-')?'dn':s.sv.startsWith('+')?'up':'neu';
-  return `<div class="price-block" id="pb-${s.yt.replace('.','_')}">
-    <span class="price-main">${s.sp.toFixed(2)}${s.sc}</span>
-    <span class="price-var ${cls}">${s.sv}</span>
-    <span class="price-src src-static">📋 Analyse</span>
-  </div>`;
+  const cls=s.sv.startsWith('-')?'dn':s.sv.startsWith('+')?'up':'neu';
+  return `<div class="price-block" id="pb-${s.yt.replace('.','_')}"><span class="price-main">${s.sp.toFixed(2)}${s.sc}</span><span class="price-var ${cls}">${s.sv}</span><span class="price-src src-static">📋 Analyse</span></div>`;
 }
-
-function budgetTag(s, liveQ){
-  const p=liveQ?.regularMarketPrice ?? s.sp ?? s.mp;
-  if(p<=200) return `<span class="budget b-ok">✓ ≤ 200${s.sc}</span>`;
-  if(s.hp)   return `<span class="budget b-pot">★ > 200${s.sc} — Fort potentiel</span>`;
-  return       `<span class="budget b-ov">⚠ > 200${s.sc}</span>`;
+function budgetTag(s,liveQ){
+  const p=liveQ?.regularMarketPrice??s.sp??s.mp;
+  if(p<=200)return `<span class="budget b-ok">✓ ≤ 200${s.sc}</span>`;
+  if(s.hp)return `<span class="budget b-pot">★ > 200${s.sc} — Fort potentiel</span>`;
+  return `<span class="budget b-ov">⚠ > 200${s.sc}</span>`;
 }
-
 function volHtml(q){
-  if(!q) return '';
-  const vol=q.regularMarketVolume, avg=q.averageDailyVolume3Month;
-  if(!vol||!avg) return '';
-  const r=vol/avg, pct=Math.min(r*50,100);
+  if(!q)return '';
+  const vol=q.regularMarketVolume,avg=q.averageDailyVolume3Month;
+  if(!vol||!avg)return '';
+  const r=vol/avg,pct=Math.min(r*50,100);
   const c=r>1.5?'var(--green)':r<0.7?'var(--red)':'var(--yellow)';
-  return `<div class="vol">Vol : <strong style="color:${c}">${r.toFixed(1)}× moy.</strong>
-    <div class="vol-track"><div class="vol-fill" style="width:${pct}%;background:${c}"></div></div></div>`;
+  return `<div class="vol">Vol : <strong style="color:${c}">${r.toFixed(1)}× moy.</strong><div class="vol-track"><div class="vol-fill" style="width:${pct}%;background:${c}"></div></div></div>`;
 }
-
 function rsiHtml(rsi){
-  if(rsi==null) return '';
+  if(rsi==null)return '';
   const c=rsi<30?'var(--red)':rsi<40?'var(--yellow)':rsi>70?'#f78166':'var(--green)';
   const lbl=rsi<30?' 🔴 Survendu':rsi<40?' 🟡 Faible':rsi>70?' 🟠 Suracheté':'';
-  return `<div class="rsi-wrap">
-    <div class="rsi-row"><span>RSI 14j${lbl}</span><span style="color:${c};font-weight:700">${rsi}</span></div>
-    <div class="rsi-track"><div class="rsi-fill" style="width:${rsi}%;background:${c}"></div></div>
-  </div>`;
+  return `<div class="rsi-wrap"><div class="rsi-row"><span>RSI 14j${lbl}</span><span style="color:${c};font-weight:700">${rsi}</span></div><div class="rsi-track"><div class="rsi-fill" style="width:${rsi}%;background:${c}"></div></div></div>`;
 }
-
 function plt(bloc){return bloc==='pea'?`<span class="plt ptr">✅ Trade Republic</span>`:`<span class="plt psc">Scalable Capital</span>`;}
 function riskBdg(r,l){const m={low:'rl',moderate:'rm',high:'rh'};return `<span class="risk ${m[r]||'rm'}">${r==='low'?'🟢':r==='moderate'?'🟡':'🔴'} ${l}</span>`;}
-
-function buildCard(s, bloc, liveQ, rsi){
-  const isLive=!!liveQ;
-  const rawP=liveQ?.regularMarketPrice??s.sp??s.mp;
+function buildCard(s,bloc,liveQ,rsi){
+  const isLive=!!liveQ,rawP=liveQ?.regularMarketPrice??s.sp??s.mp;
   return `<div class="card" data-reco="${s.reco}" data-price="${rawP}" data-hp="${s.hp}">
-    <div class="c-top">
-      <div><div class="c-ticker">${s.dt}</div><div class="c-name">${s.name}</div></div>
-      <div class="c-bdgs">${riskBdg(s.risque,s.rl)}${plt(bloc)}</div>
-    </div>
+    <div class="c-top"><div><div class="c-ticker">${s.dt}</div><div class="c-name">${s.name}</div></div><div class="c-bdgs">${riskBdg(s.risque,s.rl)}${plt(bloc)}</div></div>
     ${recoHtml(s.reco)}
     ${priceBlock(s,liveQ,isLive)}
     ${budgetTag(s,liveQ)}
     ${isLive?volHtml(liveQ):''}
     <div id="rsibox-${s.yt.replace('.','_')}">${rsiHtml(rsi)}</div>
     ${s.reco==='dip'
-      ?`<div class="ibox ired"><span class="ilbl">Raison de la baisse</span>${s.raisonBaisse}</div>
-        <div class="ibox igreen"><span class="ilbl">Fondamentaux solides</span>${s.fondamentaux}</div>`
+      ?`<div class="ibox ired"><span class="ilbl">Raison de la baisse</span>${s.raisonBaisse}</div><div class="ibox igreen"><span class="ilbl">Fondamentaux solides</span>${s.fondamentaux}</div>`
       :`<div class="ibox"><span class="ilbl">Catalyseur</span>${s.catalyst}</div>`}
     <span class="sector">📂 ${s.secteur} · ${s.bourse}</span>
     <div class="tgts">
@@ -544,74 +966,45 @@ function buildCard(s, bloc, liveQ, rsi){
     </div>
   </div>`;
 }
-
 function mkSec(id,icon,title,sub,cards){
-  document.getElementById(id).innerHTML=`
-  <div class="sec">
-    <div class="sec-hd" onclick="toggleSec(this.closest('.sec'))">
-      <div><div class="sec-ttl"><span>${icon}</span>${title}</div><div class="sec-sub">${sub}</div></div>
-      <span class="chev">▼</span>
-    </div>
-    <div class="sec-bd"><div class="grid">${cards.join('')}</div></div>
-  </div>`;
+  document.getElementById(id).innerHTML=`<div class="sec"><div class="sec-hd" onclick="toggleSec(this.closest('.sec'))"><div><div class="sec-ttl"><span>${icon}</span>${title}</div><div class="sec-sub">${sub}</div></div><span class="chev">▼</span></div><div class="sec-bd"><div class="grid">${cards.join('')}</div></div></div>`;
 }
 
 /* ════════════════════════════════════════════
-   RENDER — d'abord avec prix statiques, puis mise à jour live
+   RENDER
 ════════════════════════════════════════════ */
 function renderStatic(){
   const D=STOCKS;
   mkSec('pea-picks','🔥','TOP PICKS PEA','Gagnants du jour — signal haussier',D.pea.topPicks.map(s=>buildCard(s,'pea',null,null)));
-  mkSec('pea-pot',  '🚀','Potentiel Long Terme PEA','Horizon 3–18 mois',D.pea.potential.map(s=>buildCard(s,'pea',null,null)));
-  mkSec('pea-dip',  '📉','Buy the Dip PEA','Baisse temporaire — entrée attractive',D.pea.dip.map(s=>buildCard(s,'pea',null,null)));
+  mkSec('pea-pot','🚀','Potentiel Long Terme PEA','Horizon 3–18 mois',D.pea.potential.map(s=>buildCard(s,'pea',null,null)));
+  mkSec('pea-dip','📉','Buy the Dip PEA','Baisse temporaire — entrée attractive',D.pea.dip.map(s=>buildCard(s,'pea',null,null)));
   mkSec('intl-picks','🔥','TOP PICKS International','Gagnants du jour — signal haussier',D.international.topPicks.map(s=>buildCard(s,'intl',null,null)));
-  mkSec('intl-pot',  '🚀','Potentiel Long Terme','Horizon 3–18 mois',D.international.potential.map(s=>buildCard(s,'intl',null,null)));
-  mkSec('intl-dip',  '📉','Buy the Dip International','Baisse temporaire — entrée attractive',D.international.dip.map(s=>buildCard(s,'intl',null,null)));
+  mkSec('intl-pot','🚀','Potentiel Long Terme','Horizon 3–18 mois',D.international.potential.map(s=>buildCard(s,'intl',null,null)));
+  mkSec('intl-dip','📉','Buy the Dip International','Baisse temporaire — entrée attractive',D.international.dip.map(s=>buildCard(s,'intl',null,null)));
   updateCounters();
 }
-
-function renderLive(quotes, rsiMap){
+function renderLive(quotes){
   const D=STOCKS;
-  // Mise à jour individuelle de chaque bloc prix
-  [...D.pea.topPicks,...D.pea.potential,...D.pea.dip,
-   ...D.international.topPicks,...D.international.potential,...D.international.dip
-  ].forEach(s=>{
-    const q=quotes[s.yt];
-    if(!q) return;
-    const id='pb-'+s.yt.replace('.','_');
-    const el=document.getElementById(id);
-    if(!el) return;
-    const cur=q.currency==='EUR'?'€':'$';
-    const p=q.regularMarketPrice;
-    const pct=q.regularMarketChangePercent;
-    const v=pct!=null?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—';
-    const cls=pct==null?'neu':pct>=0?'up':'dn';
-    el.innerHTML=`<span class="price-main">${p!=null?p.toFixed(2)+cur:'—'}</span>
-      <span class="price-var ${cls}">${v}</span>
-      <span class="price-src src-live">● LIVE</span>`;
-    el.classList.add('updated');
-    setTimeout(()=>el.classList.remove('updated'),700);
-    // Mise à jour data-price pour le filtre
-    el.closest('.card')?.setAttribute('data-price', p??s.sp);
+  [...D.pea.topPicks,...D.pea.potential,...D.pea.dip,...D.international.topPicks,...D.international.potential,...D.international.dip].forEach(s=>{
+    const q=quotes[s.yt];if(!q)return;
+    const id='pb-'+s.yt.replace('.','_'),el=document.getElementById(id);if(!el)return;
+    const cur=q.currency==='EUR'?'€':'$',p=q.regularMarketPrice,pct=q.regularMarketChangePercent;
+    const v=pct!=null?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—',cls=pct==null?'neu':pct>=0?'up':'dn';
+    el.innerHTML=`<span class="price-main">${p!=null?p.toFixed(2)+cur:'—'}</span><span class="price-var ${cls}">${v}</span><span class="price-src src-live">● LIVE</span>`;
+    el.classList.add('updated');setTimeout(()=>el.classList.remove('updated'),700);
+    el.closest('.card')?.setAttribute('data-price',p??s.sp);
   });
-  updateCounters();
-  applyFilters();
+  updateCounters();applyFilters();
 }
-
 function updateRSI(rsiMap){
   const D=STOCKS;
-  [...D.pea.topPicks,...D.pea.potential,...D.pea.dip,
-   ...D.international.topPicks,...D.international.potential,...D.international.dip
-  ].forEach(s=>{
-    const rsi=rsiMap[s.yt];
+  [...D.pea.topPicks,...D.pea.potential,...D.pea.dip,...D.international.topPicks,...D.international.potential,...D.international.dip].forEach(s=>{
     const el=document.getElementById('rsibox-'+s.yt.replace('.','_'));
-    if(el) el.innerHTML=rsiHtml(rsi);
+    if(el)el.innerHTML=rsiHtml(rsiMap[s.yt]);
   });
 }
-
 function updateCounters(){
-  const all=[...STOCKS.pea.topPicks,...STOCKS.pea.potential,...STOCKS.pea.dip,
-             ...STOCKS.international.topPicks,...STOCKS.international.potential,...STOCKS.international.dip];
+  const all=[...STOCKS.pea.topPicks,...STOCKS.pea.potential,...STOCKS.pea.dip,...STOCKS.international.topPicks,...STOCKS.international.potential,...STOCKS.international.dip];
   document.getElementById('cTotal').textContent=all.length;
   document.getElementById('cBuy').textContent=all.filter(s=>s.reco==='buy').length;
   document.getElementById('cDip').textContent=all.filter(s=>s.reco==='dip').length;
@@ -625,82 +1018,51 @@ function updateCounters(){
    MAIN REFRESH
 ════════════════════════════════════════════ */
 let refreshTimer=null;
-
 async function doRefresh(){
   document.getElementById('statusMsg').textContent='Chargement des prix live…';
   document.getElementById('statusMsg').className='';
-
-  // 1. Affiche les prix statiques IMMÉDIATEMENT
-  renderStatic();
-  applyFilters();
-
-  // 2. Charge les prix live en arrière-plan
+  renderStatic();applyFilters();
   const D=STOCKS;
-  const allStocks=[...D.pea.topPicks,...D.pea.potential,...D.pea.dip,
-                   ...D.international.topPicks,...D.international.potential,...D.international.dip];
+  const allStocks=[...D.pea.topPicks,...D.pea.potential,...D.pea.dip,...D.international.topPicks,...D.international.potential,...D.international.dip];
   const tickers=allStocks.map(s=>s.yt);
-
-  // Lance quotes et RSI en parallèle
   const quotesP=fetchQuotes(tickers);
   const rsiP=(async()=>{
     const map={};
-    await Promise.all(allStocks.map(async s=>{
-      const closes=await fetchHistory(s.yt);
-      const rsi=calcRSI(closes);
-      if(rsi!=null) map[s.yt]=rsi;
-    }));
+    await Promise.all(allStocks.map(async s=>{const closes=await fetchHistory(s.yt);const rsi=calcRSI(closes);if(rsi!=null)map[s.yt]=rsi;}));
     return map;
   })();
-
   const quotes=await quotesP;
   const gotLive=Object.keys(quotes).length>0;
-
   if(gotLive){
-    renderLive(quotes, {});
+    renderLive(quotes);
     document.getElementById('pillTxt').textContent='LIVE';
-    const pill=document.getElementById('livePill');
-    pill.className='live-pill live';
-    document.getElementById('statusMsg').textContent=`✓ Prix en direct — RSI en calcul…`;
+    document.getElementById('livePill').className='live-pill live';
+    document.getElementById('statusMsg').textContent='✓ Prix en direct — RSI en calcul…';
     document.getElementById('statusMsg').className='ok';
   } else {
-    // Essaie le cache
     try{
       const c=JSON.parse(localStorage.getItem('bourse_v4')||'null');
-      if(c){
-        renderLive(c.quotes,{});
-        updateRSI(c.rsiMap||{});
-        const age=Math.round((Date.now()-c.ts)/60000);
-        document.getElementById('statusMsg').textContent=`⚠ Live indisponible — cache de ${age} min affiché. Les prix analyse sont visibles.`;
-        document.getElementById('statusMsg').className='err';
-      } else {
-        document.getElementById('statusMsg').textContent='⚠ Live indisponible — prix de l\'analyse affichés (📋 Analyse).';
-        document.getElementById('statusMsg').className='err';
-      }
+      if(c){renderLive(c.quotes);updateRSI(c.rsiMap||{});const age=Math.round((Date.now()-c.ts)/60000);document.getElementById('statusMsg').textContent=`⚠ Live indisponible — cache de ${age} min affiché.`;document.getElementById('statusMsg').className='err';}
+      else{document.getElementById('statusMsg').textContent='⚠ Live indisponible — prix de l\'analyse affichés (📋 Analyse).';document.getElementById('statusMsg').className='err';}
     }catch{}
     document.getElementById('pillTxt').textContent='Analyse';
     document.getElementById('livePill').className='live-pill static';
   }
-
-  // Attend le RSI (se calcule en arrière-plan) et met à jour toutes les cartes
   const rsiMap=await rsiP;
   updateRSI(rsiMap);
-
-  // Cache complet après RSI
   if(gotLive){
     try{localStorage.setItem('bourse_v4',JSON.stringify({quotes,rsiMap,ts:Date.now()}));}catch{}
     document.getElementById('statusMsg').textContent=`✓ Prix en direct et RSI chargés — ${Object.keys(quotes).length} actions`;
     document.getElementById('statusMsg').className='ok';
   }
-
   const now=new Date();
   const ts=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   document.getElementById('lastUpd').textContent=ts;
   document.getElementById('footerTs').textContent=`Actualisé à ${ts}`;
   document.getElementById('aDate').textContent=DATE_ANALYSE;
   updateMkt();
-
   clearTimeout(refreshTimer);
-  refreshTimer=setTimeout(doRefresh, 5*60*1000);
+  refreshTimer=setTimeout(doRefresh,5*60*1000);
 }
 
 /* ════════════════════════════════════════════
@@ -722,9 +1084,9 @@ function updateMkt(){
   const now=new Date(),h=now.getHours(),m=now.getMinutes(),wd=now.getDay();
   const wk=wd>0&&wd<6,hm=h+m/60;
   let s='⚪ Fermés';
-  if(wk&&hm>=9&&hm<17.5) s='🟢 Europe ouverte';
-  if(wk&&hm>=15.5&&hm<22) s='🟢 US ouvert';
-  if(wk&&hm>=15.5&&hm<17.5) s='🟢 Europe + US ouverts';
+  if(wk&&hm>=9&&hm<17.5)s='🟢 Europe ouverte';
+  if(wk&&hm>=15.5&&hm<22)s='🟢 US ouvert';
+  if(wk&&hm>=15.5&&hm<17.5)s='🟢 Europe + US ouverts';
   document.getElementById('mktBadge').textContent=s;
 }
 

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 Guide du Dashboard Boursier</title>
+<style>
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--border:#30363d;
+  --txt:#e6edf3;--txt2:#8b949e;--muted:#6e7681;
+  --green:#3fb950;--gbg:rgba(63,185,80,.12);--gborder:rgba(63,185,80,.3);
+  --red:#f85149;--rbg:rgba(248,81,73,.12);--rborder:rgba(248,81,73,.3);
+  --yellow:#d29922;--ybg:rgba(210,153,34,.12);--yborder:rgba(210,153,34,.3);
+  --blue:#58a6ff;--bbg:rgba(88,166,255,.12);--bborder:rgba(88,166,255,.3);
+  --purple:#bc8cff;--pbg:rgba(188,140,255,.12);--pborder:rgba(188,140,255,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.6}
+
+/* NAV */
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99}
+.nav-brand{display:flex;align-items:center;gap:.6rem;font-size:1rem;font-weight:600}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.back-btn{background:var(--bg3);border:1px solid var(--border);color:var(--txt2);border-radius:6px;padding:.3rem .8rem;font-size:.78rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;transition:.15s}
+.back-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#161b22 0%,#0d1117 100%);border-bottom:1px solid var(--border);padding:3rem 2rem 2.5rem;text-align:center}
+.hero h1{font-size:2rem;font-weight:800;margin-bottom:.6rem}
+.hero p{color:var(--txt2);font-size:1rem;max-width:600px;margin:0 auto}
+.hero-tags{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1.25rem;flex-wrap:wrap}
+.htag{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:.25rem .75rem;font-size:.75rem;color:var(--txt2)}
+
+/* TOC */
+.toc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;margin:2rem auto;max-width:900px}
+.toc h3{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem}
+.toc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
+.toc-link{display:flex;align-items:center;gap:.4rem;color:var(--blue);text-decoration:none;font-size:.82rem;padding:.3rem .4rem;border-radius:5px;transition:.12s}
+.toc-link:hover{background:var(--bbg)}
+.toc-link .icon{font-size:.9rem}
+
+/* MAIN */
+.main{max-width:1000px;margin:0 auto;padding:1.5rem 2rem 3rem}
+
+/* SECTION */
+.section{margin-bottom:3.5rem}
+.section-anchor{display:block;height:80px;margin-top:-80px;visibility:hidden}
+.section > h2{font-size:1.35rem;font-weight:700;margin-bottom:.4rem;display:flex;align-items:center;gap:.55rem}
+.section > .intro{color:var(--txt2);font-size:.9rem;margin-bottom:1.5rem;border-left:3px solid var(--border);padding-left:.85rem}
+.divider{height:1px;background:var(--border);margin:3rem 0}
+
+/* INDICATOR CARD */
+.ind-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.25rem}
+.ind-header{display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg3)}
+.ind-header .ind-icon{font-size:1.5rem}
+.ind-header h3{font-size:1rem;font-weight:700}
+.ind-header .ind-sub{font-size:.75rem;color:var(--txt2);margin-top:1px}
+.ind-body{padding:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.ind-body.single{grid-template-columns:1fr}
+.ind-desc{font-size:.85rem;color:var(--txt2);line-height:1.65}
+.ind-desc strong{color:var(--txt)}
+.ind-visual{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;flex-direction:column;gap:.55rem}
+.ind-visual .vt{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.1rem}
+
+/* MOCK ELEMENTS (replicate dashboard styles) */
+.mock-price{font-size:1.8rem;font-weight:900;font-family:monospace}
+.mock-var{font-size:.85rem;font-weight:700;padding:.1rem .4rem;border-radius:5px;display:inline-block}
+.up{color:var(--green);background:var(--gbg)}.dn{color:var(--red);background:var(--rbg)}.neu{color:var(--blue);background:var(--bbg)}
+.mock-reco{border-radius:7px;padding:.5rem .8rem;text-align:center;font-weight:700;font-size:.82rem}
+.reco-buy {background:var(--gbg);border:2px solid var(--green); color:var(--green)}
+.reco-dip {background:var(--bbg);border:2px solid var(--blue);  color:var(--blue)}
+.reco-long{background:var(--pbg);border:2px solid var(--purple);color:var(--purple)}
+.reco-wait{background:var(--ybg);border:2px solid var(--yellow);color:var(--yellow)}
+.mock-risk{font-size:.65rem;font-weight:700;padding:.13rem .42rem;border-radius:4px;text-transform:uppercase;display:inline-block}
+.rl{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
+.rm{background:var(--ybg);color:var(--yellow);border:1px solid var(--yborder)}
+.rh{background:var(--rbg);color:var(--red);border:1px solid var(--rborder)}
+.mock-rsi-track{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:.25rem}
+.mock-rsi-fill{height:100%;border-radius:4px}
+.mock-vol-track{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:.2rem}
+.mock-vol-fill{height:100%;border-radius:3px}
+.mock-tgt{background:var(--bg);border-radius:6px;padding:.35rem .55rem;text-align:center;flex:1}
+.mock-tgt .tl{font-size:.6rem;color:var(--muted);text-transform:uppercase}
+.mock-tgt .tv{font-size:.8rem;font-weight:700}
+.mock-budget{font-size:.68rem;border-radius:4px;padding:.1rem .4rem;display:inline-block}
+.b-ok{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
+.b-ov{background:var(--rbg);color:var(--red);border:1px solid var(--rborder)}
+.b-pot{background:var(--ybg);color:var(--yellow);border:1px solid var(--yborder)}
+.mock-src{font-size:.65rem;border-radius:4px;padding:.08rem .38rem;display:inline-block;font-weight:700}
+.src-live{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
+.src-static{background:var(--ybg);color:var(--yellow);border:1px solid var(--yborder)}
+.mock-plt{font-size:.65rem;border-radius:4px;padding:.12rem .42rem;display:inline-block}
+.plt-tr{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
+.plt-sc{background:var(--bbg);color:var(--blue);border:1px solid var(--bborder)}
+
+/* VALUES TABLE */
+.val-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.75rem}
+.val-table th{text-align:left;padding:.5rem .65rem;color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.val-table td{padding:.55rem .65rem;border-bottom:1px solid #1c2330;vertical-align:top}
+.val-table tr:last-child td{border-bottom:none}
+.val-table td:first-child{font-weight:700;white-space:nowrap;color:var(--blue)}
+.val-table td:nth-child(2){color:var(--txt2)}
+
+/* WARNING BOX */
+.warn{background:var(--ybg);border:1px solid var(--yborder);border-radius:8px;padding:1rem 1.25rem;font-size:.82rem;color:var(--yellow);margin-top:1rem;line-height:1.6}
+.tip{background:var(--gbg);border:1px solid var(--gborder);border-radius:8px;padding:1rem 1.25rem;font-size:.82rem;color:var(--green);margin-top:.75rem;line-height:1.6}
+.info{background:var(--bbg);border:1px solid var(--bborder);border-radius:8px;padding:1rem 1.25rem;font-size:.82rem;color:var(--blue);margin-top:.75rem;line-height:1.6}
+
+/* MOCK FULL CARD */
+.mock-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.9rem;display:flex;flex-direction:column;gap:.6rem;max-width:320px}
+.mock-card-top{display:flex;justify-content:space-between}
+.mock-ticker{font-size:1.05rem;font-weight:700;font-family:monospace;color:var(--blue)}
+.mock-name{font-size:.73rem;color:var(--txt2)}
+.mock-bdgs{display:flex;flex-direction:column;align-items:flex-end;gap:.2rem}
+.mock-ibox{border-radius:6px;padding:.5rem .6rem;font-size:.75rem;color:var(--txt2);line-height:1.5;border-left:3px solid var(--blue);background:var(--bg3)}
+.mock-ibox .ilbl{display:block;font-size:.6rem;text-transform:uppercase;font-weight:700;color:var(--blue);margin-bottom:.1rem}
+.mock-sector{font-size:.65rem;color:var(--muted);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:.08rem .38rem;display:inline-block}
+.mock-tgts{display:flex;gap:.35rem}
+.price-row-mock{display:flex;align-items:baseline;gap:.5rem}
+
+/* STEP */
+.steps{display:flex;flex-direction:column;gap:1rem;margin-top:.75rem}
+.step{display:flex;gap:1rem;align-items:flex-start}
+.step-num{background:var(--blue);color:#0d1117;font-weight:800;font-size:.85rem;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.05rem}
+.step-content h4{font-size:.9rem;font-weight:600;margin-bottom:.25rem}
+.step-content p{font-size:.82rem;color:var(--txt2);line-height:1.6}
+
+/* GLOSSARY */
+.glossary{display:flex;flex-direction:column;gap:.65rem}
+.gitem{display:flex;gap:1rem;padding:.7rem .9rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.gterm{font-weight:700;font-size:.85rem;color:var(--blue);min-width:120px;flex-shrink:0}
+.gdef{font-size:.82rem;color:var(--txt2);line-height:1.55}
+
+/* FILTER DEMO */
+.filter-demo{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.fbt-demo{border-radius:20px;padding:.22rem .7rem;font-size:.72rem;cursor:default}
+.fbt-on {background:var(--bbg);border:1px solid var(--blue);color:var(--blue)}
+.fbt-off{background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+
+/* DISCLAIMER */
+.disc-box{background:var(--rbg);border:1px solid var(--rborder);border-radius:10px;padding:1.25rem 1.5rem;margin-top:2rem}
+.disc-box h3{color:var(--red);font-size:.95rem;margin-bottom:.75rem}
+.disc-box ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.disc-box li{font-size:.82rem;color:var(--txt2);display:flex;gap:.5rem}
+.disc-box li::before{content:'⚠';flex-shrink:0}
+
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:.85rem 2rem;font-size:.72rem;color:var(--muted);text-align:center;margin-top:2rem}
+
+@media(max-width:700px){
+  .main{padding:1rem}
+  .hero{padding:2rem 1rem}
+  .hero h1{font-size:1.4rem}
+  .toc-grid{grid-template-columns:repeat(2,1fr)}
+  .ind-body{grid-template-columns:1fr}
+  .mock-card{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">📖 Guide du Dashboard Boursier</div>
+  <div class="nav-right">
+    <a href="index.html" class="back-btn">← Retour au Dashboard</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>📊 Comment utiliser le Dashboard</h1>
+  <p>Comprendre chaque indicateur pour prendre de meilleures décisions d'investissement sur Trade Republic et Scalable Capital.</p>
+  <div class="hero-tags">
+    <span class="htag">📋 Débutant</span>
+    <span class="htag">🇪🇺 PEA</span>
+    <span class="htag">🌍 International</span>
+    <span class="htag">📈 Analyse technique</span>
+    <span class="htag">💶 Gestion du risque</span>
+  </div>
+</div>
+
+<!-- TABLE DES MATIÈRES -->
+<div style="max-width:1000px;margin:1.5rem auto 0;padding:0 2rem">
+<div class="toc">
+  <h3>Table des matières</h3>
+  <div class="toc-grid">
+    <a href="#vue-ensemble" class="toc-link"><span class="icon">🗺️</span>Vue d'ensemble</a>
+    <a href="#signal-achat" class="toc-link"><span class="icon">🚦</span>Signal d'achat</a>
+    <a href="#prix" class="toc-link"><span class="icon">💰</span>Prix et variation</a>
+    <a href="#budget" class="toc-link"><span class="icon">💶</span>Filtre budget</a>
+    <a href="#rsi" class="toc-link"><span class="icon">📈</span>RSI</a>
+    <a href="#volume" class="toc-link"><span class="icon">📊</span>Volume</a>
+    <a href="#targets" class="toc-link"><span class="icon">🎯</span>Cible et Stop-Loss</a>
+    <a href="#risque" class="toc-link"><span class="icon">🛡️</span>Niveau de risque</a>
+    <a href="#onglets" class="toc-link"><span class="icon">🗂️</span>PEA vs International</a>
+    <a href="#filtres" class="toc-link"><span class="icon">🔍</span>Les filtres</a>
+    <a href="#live" class="toc-link"><span class="icon">📡</span>Prix Live vs Analyse</a>
+    <a href="#glossaire" class="toc-link"><span class="icon">📚</span>Glossaire</a>
+  </div>
+</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- ═══ VUE D'ENSEMBLE ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="vue-ensemble"></span>
+    <h2>🗺️ Vue d'ensemble du dashboard</h2>
+    <p class="intro">Le dashboard est organisé en zones distinctes. Voici comment le lire de haut en bas.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>La barre de navigation (en haut, fixe)</h4>
+          <p>Affiche le statut des marchés en temps réel (<strong style="color:var(--green)">🟢 Europe ouverte / US ouvert</strong> ou <strong style="color:var(--muted)">⚪ Fermés</strong>), l'heure de la dernière mise à jour, et le bouton <strong>⟳ Actualiser</strong> pour recharger les prix live.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>La barre de statut</h4>
+          <p>Indique si les prix affichés sont en direct depuis Yahoo Finance (<strong style="color:var(--green)">✓ Prix en direct chargés</strong>) ou s'il s'agit des prix de l'analyse (<strong style="color:var(--yellow)">⚠ Live indisponible</strong>). Les prix de l'analyse restent toujours visibles même sans internet.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Les filtres rapides</h4>
+          <p>Boutons pour afficher uniquement les actions dans ton budget (≤ 200€) et selon le type de recommandation (Acheter / Dip / Long terme / Attendre).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Les onglets PEA et International</h4>
+          <p><strong style="color:var(--green)">🇪🇺 PEA</strong> = actions européennes à acheter sur <strong>Trade Republic</strong>. <strong style="color:var(--blue)">🌍 International</strong> = actions US/mondiales à acheter sur <strong>Scalable Capital</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Les cartes d'actions</h4>
+          <p>Chaque action est représentée par une carte. Elle contient le signal d'achat, le prix actuel, les indicateurs techniques et la stratégie recommandée.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ SIGNAL D'ACHAT ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="signal-achat"></span>
+    <h2>🚦 Le signal d'achat</h2>
+    <p class="intro">C'est l'indicateur le plus important. Il te dit en un coup d'œil quoi faire avec cette action aujourd'hui.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">🚦</span>
+        <div><h3>Badge de recommandation</h3><div class="ind-sub">Affiché en grand dans chaque carte, juste sous le nom de l'action</div></div>
+      </div>
+      <div class="ind-body single">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem">
+
+          <div>
+            <div class="mock-reco reco-buy" style="margin-bottom:.75rem">🟢 ACHETER MAINTENANT</div>
+            <p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--green)">Signification :</strong> L'action est en hausse aujourd'hui avec un catalyseur clair (résultats, annonce, upgrade analyste). C'est le meilleur moment pour entrer selon l'analyse du jour.<br><br>
+            <strong style="color:var(--txt)">Que faire :</strong> Tu peux acheter maintenant ou placer un ordre. Ne dépasse pas 5–10% de ton portefeuille sur une seule action.</p>
+          </div>
+
+          <div>
+            <div class="mock-reco reco-dip" style="margin-bottom:.75rem">📉 BUY THE DIP — POINT D'ENTRÉE</div>
+            <p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--blue)">Signification :</strong> L'action a reculé récemment (souvent -5 à -15%), mais ses fondamentaux restent solides. La baisse est temporaire — c'est une opportunité d'acheter moins cher.<br><br>
+            <strong style="color:var(--txt)">Que faire :</strong> Acheter au "point d'entrée recommandé" indiqué sur la carte. Attends que le RSI soit sous 35 pour confirmer.</p>
+          </div>
+
+          <div>
+            <div class="mock-reco reco-long" style="margin-bottom:.75rem">🔭 LONG TERME (3–18 mois)</div>
+            <p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--purple)">Signification :</strong> L'action n'est pas forcément en hausse aujourd'hui, mais elle a un fort potentiel de valorisation sur plusieurs mois. La thèse d'investissement est solide.<br><br>
+            <strong style="color:var(--txt)">Que faire :</strong> Tu peux acheter maintenant ou fractionner tes achats sur plusieurs semaines (DCA — investir régulièrement).</p>
+          </div>
+
+          <div>
+            <div class="mock-reco reco-wait" style="margin-bottom:.75rem">🟡 ATTENDRE</div>
+            <p style="font-size:.82rem;color:var(--txt2);line-height:1.6"><strong style="color:var(--yellow)">Signification :</strong> Le momentum n'est pas favorable en ce moment. L'action est peut-être surachetée (RSI > 70) ou le contexte macro est défavorable.<br><br>
+            <strong style="color:var(--txt)">Que faire :</strong> Surveille l'action et attends un meilleur point d'entrée. Ne force pas un achat.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ PRIX ET VARIATION ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="prix"></span>
+    <h2>💰 Le prix et la variation du jour</h2>
+    <p class="intro">Le prix est affiché en très grand — c'est le cours actuel de l'action. La variation indique si l'action monte ou descend aujourd'hui.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">💰</span>
+        <div><h3>Prix actuel + Variation journalière</h3><div class="ind-sub">Affiché en grand juste sous le badge de recommandation</div></div>
+      </div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <strong>Le prix :</strong> c'est combien coûte une action en ce moment. Pour acheter sur Trade Republic ou Scalable Capital, c'est ce montant que tu paies par action.<br><br>
+          <strong>La variation (%) :</strong> c'est l'évolution du prix depuis l'ouverture des marchés ce matin.<br><br>
+          <span style="color:var(--green)">+X% en vert</span> → l'action monte aujourd'hui<br>
+          <span style="color:var(--red)">-X% en rouge</span> → l'action descend aujourd'hui<br><br>
+          <div class="tip">💡 Une hausse du jour élevée (+2% et plus) avec un volume fort est un signal positif pour les actions "Acheter maintenant".</div>
+          <div class="warn" style="margin-top:.6rem">⚠ La variation quotidienne seule ne suffit pas pour décider. Regarde aussi le RSI et le catalyseur.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemples</div>
+          <div>
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:.3rem">Action en hausse (positif) :</div>
+            <div class="price-row-mock">
+              <span class="mock-price" style="font-size:1.6rem">175.20€</span>
+              <span class="mock-var up">+3.4%</span>
+            </div>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">● LIVE</div>
+          </div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div>
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:.3rem">Action en baisse (Buy the Dip) :</div>
+            <div class="price-row-mock">
+              <span class="mock-price" style="font-size:1.6rem">88.40€</span>
+              <span class="mock-var dn">-2.3%</span>
+            </div>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">● LIVE</div>
+          </div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div>
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:.3rem">Prix de l'analyse (live indispo) :</div>
+            <div class="price-row-mock">
+              <span class="mock-price" style="font-size:1.6rem">203.27$</span>
+              <span class="mock-var up">+1.4%</span>
+            </div>
+            <div style="font-size:.68rem;color:var(--yellow);margin-top:.2rem">📋 Analyse</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ BUDGET ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="budget"></span>
+    <h2>💶 Le tag budget</h2>
+    <p class="intro">Indique si l'action rentre dans ton budget de 200€ par action, ou si elle le dépasse.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">💶</span>
+        <div><h3>Tag budget</h3><div class="ind-sub">Affiché sous le prix, lié au filtre "≤ 200€"</div></div>
+      </div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          Tu as fixé un budget de <strong>200€ maximum par action</strong>, sauf exception pour les actions à fort potentiel.<br><br>
+          Le tag te dit immédiatement si l'action est accessible ou non :
+          <br><br>
+          <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.25rem">
+            <div style="display:flex;align-items:center;gap:.75rem">
+              <span class="mock-budget b-ok">✓ ≤ 200€</span>
+              <span style="font-size:.82rem;color:var(--txt2)">L'action rentre dans ton budget — tu peux acheter directement</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+              <span class="mock-budget b-pot">★ > 200€ — Fort potentiel</span>
+              <span style="font-size:.82rem;color:var(--txt2)">Plus chère, mais le potentiel justifie l'exception (ASML, NVDA, WDC...)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+              <span class="mock-budget b-ov">⚠ > 200€</span>
+              <span style="font-size:.82rem;color:var(--txt2)">Hors budget — masquée quand le filtre "≤ 200€" est actif</span>
+            </div>
+          </div>
+          <div class="info" style="margin-top:.85rem">💡 Active le filtre <strong>"💶 ≤ 200€"</strong> en haut de page pour masquer automatiquement toutes les actions hors budget (sauf fort potentiel).</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemple carte avec tag budget</div>
+          <div class="mock-card" style="max-width:100%">
+            <div class="mock-card-top">
+              <div><div class="mock-ticker">TTE</div><div class="mock-name">TotalEnergies SE</div></div>
+              <div class="mock-bdgs"><span class="mock-risk rl">🟢 Faible</span><span class="mock-plt plt-tr">✅ Trade Republic</span></div>
+            </div>
+            <div class="mock-reco reco-buy">🟢 ACHETER MAINTENANT</div>
+            <div class="price-row-mock"><span class="mock-price" style="font-size:1.6rem">58.80€</span><span class="mock-var up">+1.2%</span><span class="mock-src src-live">● LIVE</span></div>
+            <span class="mock-budget b-ok">✓ ≤ 200€</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ RSI ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="rsi"></span>
+    <h2>📈 Le RSI — Relative Strength Index</h2>
+    <p class="intro">Le RSI est l'indicateur technique le plus utilisé pour savoir si une action est trop chère (surachetée) ou trop bon marché (survendue). Il n'apparaît que sur les cartes "Buy the Dip".</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">📈</span>
+        <div><h3>RSI (14 jours)</h3><div class="ind-sub">Calculé automatiquement à partir de 14 jours d'historique Yahoo Finance</div></div>
+      </div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          Le RSI est un chiffre entre <strong>0 et 100</strong>.<br><br>
+          Il mesure la "pression acheteuse" vs la "pression vendeuse" sur les 14 derniers jours.<br><br>
+          <table class="val-table">
+            <thead><tr><th>Valeur RSI</th><th>Signification</th><th>Que faire ?</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--red)">< 30</td><td>🔴 Très survendu — les vendeurs ont exagéré</td><td>Signal d'achat fort — rebond probable</td></tr>
+              <tr><td style="color:var(--yellow)">30 – 40</td><td>🟡 Survendu modéré</td><td>Bon point d'entrée pour un Buy the Dip</td></tr>
+              <tr><td style="color:var(--green)">40 – 60</td><td>🟢 Zone neutre — équilibre normal</td><td>Ni suracheté ni survendu</td></tr>
+              <tr><td style="color:var(--yellow)">60 – 70</td><td>🟡 Légèrement suracheté</td><td>Prudence — moins d'opportunité</td></tr>
+              <tr><td style="color:var(--red)">> 70</td><td>🟠 Suracheté — les acheteurs ont trop poussé</td><td>Risque de correction — éviter d'acheter</td></tr>
+            </tbody>
+          </table>
+          <div class="warn" style="margin-top:.85rem">⚠ Un RSI bas seul ne suffit pas — vérifie toujours que la raison de la baisse est temporaire (pas un profit warning, pas une fraude, pas un problème structurel).</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemples de barres RSI</div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j 🔴 Survendu</span><span style="color:var(--red);font-weight:700">29</span></div>
+            <div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:29%;background:var(--red)"></div></div>
+            <div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Signal fort : acheter (Buy the Dip)</div>
+          </div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j 🟡 Faible</span><span style="color:var(--yellow);font-weight:700">36</span></div>
+            <div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:36%;background:var(--yellow)"></div></div>
+            <div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Bon point d'entrée</div>
+          </div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j</span><span style="color:var(--green);font-weight:700">52</span></div>
+            <div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:52%;background:var(--green)"></div></div>
+            <div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Zone neutre</div>
+          </div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>RSI 14j 🟠 Suracheté</span><span style="color:#f78166;font-weight:700">74</span></div>
+            <div class="mock-rsi-track"><div class="mock-rsi-fill" style="width:74%;background:#f78166"></div></div>
+            <div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Attendre une correction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ VOLUME ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="volume"></span>
+    <h2>📊 Le Volume</h2>
+    <p class="intro">Le volume indique combien d'actions ont été échangées aujourd'hui, comparé à la moyenne habituelle. Il confirme (ou infirme) la force d'un mouvement de prix.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">📊</span>
+        <div><h3>Volume vs Moyenne 3 mois</h3><div class="ind-sub">Barres colorées sous le prix — données live uniquement</div></div>
+      </div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          Le volume est exprimé en <strong>"X× la moyenne"</strong>. Par exemple, "2.3× la moyenne" signifie que le volume d'échanges aujourd'hui est 2,3 fois supérieur à la normale.<br><br>
+          <table class="val-table">
+            <thead><tr><th>Volume</th><th>Couleur</th><th>Interprétation</th></tr></thead>
+            <tbody>
+              <tr><td>> 1.5×</td><td style="color:var(--green)">Vert</td><td>Fort intérêt — les institutionnels entrent sur la valeur. Confirme la hausse.</td></tr>
+              <tr><td>0.7× – 1.5×</td><td style="color:var(--yellow)">Jaune</td><td>Volume normal — mouvement sans conviction particulière</td></tr>
+              <tr><td>< 0.7×</td><td style="color:var(--red)">Rouge</td><td>Volume faible — peu d'intérêt, mouvement peu fiable</td></tr>
+            </tbody>
+          </table>
+          <div class="tip" style="margin-top:.85rem">💡 Un signal "Acheter maintenant" est beaucoup plus fiable si le volume est élevé (vert). Une hausse sans volume peut s'effondrer rapidement.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemples de volume</div>
+          <div>
+            <div class="vol-row" style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--txt2)">
+              Vol : <strong style="color:var(--green)">2.3× moy.</strong>
+              <div class="mock-vol-track" style="flex:1"><div class="mock-vol-fill" style="width:100%;background:var(--green)"></div></div>
+            </div>
+            <div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Fort — confirme le signal haussier</div>
+          </div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div>
+            <div style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--txt2)">
+              Vol : <strong style="color:var(--yellow)">1.1× moy.</strong>
+              <div class="mock-vol-track" style="flex:1"><div class="mock-vol-fill" style="width:55%;background:var(--yellow)"></div></div>
+            </div>
+            <div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Normal — signal modérément fiable</div>
+          </div>
+          <div style="height:1px;background:var(--border)"></div>
+          <div>
+            <div style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--txt2)">
+              Vol : <strong style="color:var(--red)">0.5× moy.</strong>
+              <div class="mock-vol-track" style="flex:1"><div class="mock-vol-fill" style="width:25%;background:var(--red)"></div></div>
+            </div>
+            <div style="font-size:.68rem;color:var(--txt2);margin-top:.3rem">→ Faible — méfiance, signal peu fiable</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ CIBLE ET STOP-LOSS ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="targets"></span>
+    <h2>🎯 Cible de prix et Stop-Loss</h2>
+    <p class="intro">Deux chiffres essentiels pour gérer ton investissement : où tu vises pour prendre des bénéfices, et où tu sors pour limiter les pertes.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">🎯</span>
+        <div><h3>Cible / Stop-Loss / Horizon</h3><div class="ind-sub">Les 3 piliers en bas de chaque carte</div></div>
+      </div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <strong style="color:var(--green)">🟢 Cible :</strong> Prix auquel l'analyste estime que tu devrais vendre pour encaisser tes bénéfices. Par exemple "195€ (+11%)" signifie que si l'action atteint 195€, tu as gagné 11%.<br><br>
+          <strong style="color:var(--red)">🔴 Stop-Loss :</strong> Prix en dessous duquel tu devrais vendre pour limiter tes pertes. C'est une limite de sécurité. Par exemple "162€ (-7.5%)" signifie : si l'action tombe à 162€, vends pour éviter de perdre plus.<br><br>
+          <strong style="color:var(--yellow)">🕐 Horizon :</strong> Durée recommandée pour garder l'action avant de la revendre.<br><br>
+          <table class="val-table">
+            <thead><tr><th>Horizon</th><th>Durée</th></tr></thead>
+            <tbody>
+              <tr><td>Court terme</td><td>Quelques jours à 4 semaines</td></tr>
+              <tr><td>Moyen terme</td><td>1 à 6 mois</td></tr>
+              <tr><td>Long terme</td><td>6 mois à 2 ans</td></tr>
+            </tbody>
+          </table>
+          <div class="warn" style="margin-top:.85rem">⚠ Le Stop-Loss est crucial. Sans lui, une petite perte peut devenir très grande. Sur Trade Republic et Scalable Capital, tu peux placer un ordre Stop-Loss automatique.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Exemple — carte Airbus (AIR)</div>
+          <div class="mock-card" style="max-width:100%">
+            <div style="font-size:.75rem;color:var(--txt2);margin-bottom:.25rem">Prix actuel : <strong style="color:var(--txt)">175.20€</strong></div>
+            <div class="mock-tgts" style="display:flex;gap:.35rem">
+              <div class="mock-tgt" style="flex:1">
+                <div class="tl" style="font-size:.6rem;color:var(--muted);text-transform:uppercase">Cible</div>
+                <div class="tv" style="color:var(--green);font-weight:700;font-size:.82rem">195€ (+11%)</div>
+              </div>
+              <div class="mock-tgt" style="flex:1">
+                <div class="tl" style="font-size:.6rem;color:var(--muted);text-transform:uppercase">Stop-Loss</div>
+                <div class="tv" style="color:var(--red);font-weight:700;font-size:.82rem">162€ (-7.5%)</div>
+              </div>
+              <div class="mock-tgt" style="flex:1">
+                <div class="tl" style="font-size:.6rem;color:var(--muted);text-transform:uppercase">Horizon</div>
+                <div class="tv" style="color:var(--yellow);font-weight:700;font-size:.72rem">Moyen terme</div>
+              </div>
+            </div>
+            <div style="font-size:.75rem;color:var(--txt2);margin-top:.5rem;line-height:1.5">
+              📊 Potentiel gain : <strong style="color:var(--green)">+11%</strong><br>
+              📊 Risque max : <strong style="color:var(--red)">-7.5%</strong><br>
+              📊 Ratio R/R : <strong style="color:var(--blue)">1.47 (favorable)</strong>
+            </div>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.5rem;line-height:1.5">Un ratio Gain/Risque > 1 est favorable.<br>Ici 11% / 7.5% = 1.47 → bon trade.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ RISQUE ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="risque"></span>
+    <h2>🛡️ Le niveau de risque</h2>
+    <p class="intro">Chaque action est classée selon son niveau de risque. Ce badge t'aide à adapter ton investissement à ta tolérance au risque.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">🛡️</span>
+        <div><h3>Badge de risque</h3><div class="ind-sub">Affiché en haut à droite de chaque carte</div></div>
+      </div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div style="display:flex;align-items:flex-start;gap:.75rem">
+              <span class="mock-risk rl" style="margin-top:.15rem">🟢 Faible</span>
+              <div style="font-size:.82rem;color:var(--txt2);line-height:1.6">
+                Société établie, bilan solide, volatilité modérée. Idéal pour commencer ou pour investir une somme importante.<br>
+                <em>Exemples : Sanofi, TotalEnergies, Western Digital</em>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:.75rem">
+              <span class="mock-risk rm" style="margin-top:.15rem">🟡 Modéré</span>
+              <div style="font-size:.82rem;color:var(--txt2);line-height:1.6">
+                Société en croissance, bonne trajectoire mais secteur ou valorisation plus volatils. Acceptable pour la plupart des investisseurs.<br>
+                <em>Exemples : ASML, NVIDIA, AMD, Dassault Systèmes</em>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:.75rem">
+              <span class="mock-risk rh" style="margin-top:.15rem">🔴 Élevé</span>
+              <div style="font-size:.82rem;color:var(--txt2);line-height:1.6">
+                Forte volatilité, secteur spéculatif ou société en retournement. Convient à ceux qui acceptent de potentiellement perdre une partie du capital.<br>
+                <em>À n'investir que 2–5% max du portefeuille</em>
+              </div>
+            </div>
+          </div>
+          <div class="tip" style="margin-top:.85rem">💡 Pour commencer, concentre-toi sur les actions 🟢 Faible risque avec le signal "Acheter maintenant" et un prix ≤ 200€.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Règle d'allocation suggérée</div>
+          <table class="val-table">
+            <thead><tr><th>Risque</th><th>% max du portefeuille</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--green)">🟢 Faible</td><td>Jusqu'à 15–20% par action</td></tr>
+              <tr><td style="color:var(--yellow)">🟡 Modéré</td><td>Jusqu'à 10% par action</td></tr>
+              <tr><td style="color:var(--red)">🔴 Élevé</td><td>2–5% max par action</td></tr>
+            </tbody>
+          </table>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.65rem;line-height:1.6">Ne jamais mettre plus de 20% de son capital sur une seule action, quel que soit le signal.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ ONGLETS ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="onglets"></span>
+    <h2>🗂️ PEA vs International</h2>
+    <p class="intro">Le dashboard sépare les actions en deux catégories selon leur éligibilité fiscale et la plateforme à utiliser.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">🗂️</span>
+        <div><h3>Les deux onglets</h3><div class="ind-sub">À choisir selon où tu veux investir</div></div>
+      </div>
+      <div class="ind-body">
+        <div>
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem">
+            <span class="mock-plt plt-tr" style="font-size:.75rem;padding:.2rem .6rem">✅ Trade Republic (PEA)</span>
+          </div>
+          <p style="font-size:.82rem;color:var(--txt2);line-height:1.65">
+            <strong style="color:var(--txt)">PEA = Plan d'Épargne en Actions</strong><br>
+            Enveloppe fiscale française très avantageuse. Après 5 ans de détention, les gains sont <strong>exonérés d'impôt sur le revenu</strong> (seulement 17.2% de prélèvements sociaux).<br><br>
+            <strong>Qui peut y être :</strong> uniquement les sociétés dont le siège est dans l'UE ou l'EEE (France, Allemagne, Pays-Bas, Espagne, Italie, etc.).<br><br>
+            <strong>Exemples :</strong> Airbus, LVMH, ASML, SAP, TotalEnergies, Sanofi, Siemens.
+          </p>
+          <div class="tip" style="margin-top:.75rem">💡 Priorité au PEA ! La fiscalité est bien meilleure. Commence par remplir ton PEA avant d'investir sur Scalable Capital.</div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem">
+            <span class="mock-plt psc" style="font-size:.75rem;padding:.2rem .6rem">Scalable Capital</span>
+          </div>
+          <p style="font-size:.82rem;color:var(--txt2);line-height:1.65">
+            <strong style="color:var(--txt)">CTO = Compte-Titres Ordinaire</strong><br>
+            Compte classique sans avantage fiscal. Les gains sont imposés à la <strong>flat tax de 30%</strong> (12.8% IR + 17.2% PS).<br><br>
+            <strong>Qui y va :</strong> toutes les actions non-éligibles PEA. Principalement les actions US (NYSE, NASDAQ) et asiatiques.<br><br>
+            <strong>Exemples :</strong> NVIDIA, AMD, Micron, Alphabet, Airbnb, Western Digital.
+          </p>
+          <div class="warn" style="margin-top:.75rem">⚠ Sur Scalable Capital, garde à l'esprit que 30% de tes gains iront aux impôts. Adapte ta cible de rentabilité en conséquence.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ FILTRES ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="filtres"></span>
+    <h2>🔍 Les filtres</h2>
+    <p class="intro">Les filtres en haut de page te permettent d'afficher uniquement les actions qui correspondent à ta stratégie du moment.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">🔍</span>
+        <div><h3>Barre de filtres</h3><div class="ind-sub">Cliquer sur un bouton l'active (bleu) ou le désactive (gris)</div></div>
+      </div>
+      <div class="ind-body single">
+        <div class="filter-demo">
+          <span style="font-size:.75rem;color:var(--txt2)">Filtres :</span>
+          <button class="fbt-demo fbt-on">💶 ≤ 200€</button>
+          <button class="fbt-demo fbt-on">🟢 Acheter</button>
+          <button class="fbt-demo fbt-off">📉 Buy the Dip</button>
+          <button class="fbt-demo fbt-off">🔭 Long terme</button>
+          <button class="fbt-demo fbt-on">🟡 Attendre</button>
+        </div>
+        <p style="font-size:.78rem;color:var(--txt2);margin-bottom:1rem">Dans cet exemple : seules les actions ≤ 200€, avec signal "Acheter" ou "Attendre" sont affichées. Les "Dip" et "Long terme" sont masquées.</p>
+        <table class="val-table">
+          <thead><tr><th>Filtre</th><th>Ce qu'il fait</th><th>Quand l'utiliser ?</th></tr></thead>
+          <tbody>
+            <tr><td>💶 ≤ 200€</td><td>Masque les actions qui coûtent plus de 200€ (sauf fort potentiel)</td><td>Toujours actif par défaut selon ton budget</td></tr>
+            <tr><td>🟢 Acheter</td><td>Affiche les actions avec signal "Acheter maintenant"</td><td>Quand tu veux investir aujourd'hui</td></tr>
+            <tr><td>📉 Buy the Dip</td><td>Affiche les actions en baisse à acheter</td><td>Quand tu cherches un prix d'entrée réduit</td></tr>
+            <tr><td>🔭 Long terme</td><td>Affiche les actions à potentiel sur plusieurs mois</td><td>Pour construire un portefeuille long terme</td></tr>
+            <tr><td>🟡 Attendre</td><td>Affiche les actions déconseillées aujourd'hui</td><td>Pour surveiller ce qu'il faut éviter maintenant</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ LIVE VS ANALYSE ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="live"></span>
+    <h2>📡 Prix Live vs Prix Analyse</h2>
+    <p class="intro">Le dashboard essaie de charger les prix en direct depuis Yahoo Finance. Si ce n'est pas possible, il affiche les prix de la dernière analyse /bourse.</p>
+
+    <div class="ind-card">
+      <div class="ind-header">
+        <span class="ind-icon">📡</span>
+        <div><h3>Indicateur de fraîcheur des données</h3><div class="ind-sub">Visible sur chaque carte et dans la barre de statut</div></div>
+      </div>
+      <div class="ind-body">
+        <div class="ind-desc">
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div>
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
+                <span class="mock-src src-live">● LIVE</span>
+                <span style="font-size:.82rem;font-weight:600">Prix en direct</span>
+              </div>
+              <p style="font-size:.82rem;color:var(--txt2);line-height:1.6">Le prix vient d'être récupéré depuis Yahoo Finance. C'est le cours actuel du marché. Ces données se rafraîchissent automatiquement toutes les 5 minutes ou quand tu cliques sur "⟳ Actualiser".</p>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem">
+                <span class="mock-src src-static">📋 Analyse</span>
+                <span style="font-size:.82rem;font-weight:600">Prix de l'analyse</span>
+              </div>
+              <p style="font-size:.82rem;color:var(--txt2);line-height:1.6">Le prix live n'a pas pu être chargé. Le prix affiché est celui de la dernière exécution du skill /bourse. Il peut être légèrement décalé mais reste une bonne référence pour l'analyse.</p>
+            </div>
+          </div>
+          <div class="info" style="margin-top:.85rem">💡 Si les prix live ne chargent pas, clique sur "⟳ Actualiser". Si ça persiste, vérifie ta connexion internet. Les prix de l'analyse restent toujours visibles.</div>
+        </div>
+        <div class="ind-visual">
+          <div class="vt">Barre de statut — ce que tu vois</div>
+          <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.8rem">
+            <div style="background:var(--gbg);border:1px solid var(--gborder);border-radius:6px;padding:.5rem .75rem;color:var(--green)">
+              ✓ Prix en direct chargés — 13 actions
+            </div>
+            <div style="background:var(--ybg);border:1px solid var(--yborder);border-radius:6px;padding:.5rem .75rem;color:var(--yellow)">
+              ⚠ Live indisponible — cache de 12 min affiché.
+            </div>
+            <div style="background:var(--ybg);border:1px solid var(--yborder);border-radius:6px;padding:.5rem .75rem;color:var(--yellow)">
+              ⚠ Live indisponible — prix de l'analyse affichés (📋 Analyse).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ GLOSSAIRE ═══ -->
+  <div class="section">
+    <span class="section-anchor" id="glossaire"></span>
+    <h2>📚 Glossaire des termes</h2>
+    <p class="intro">Tous les termes financiers utilisés dans le dashboard expliqués simplement.</p>
+
+    <div class="glossary">
+      <div class="gitem"><div class="gterm">RSI</div><div class="gdef">Relative Strength Index. Indicateur technique (0–100) qui mesure si une action est survendue (< 30, opportunité d'achat) ou surachetée (> 70, risque de correction).</div></div>
+      <div class="gitem"><div class="gterm">Stop-Loss</div><div class="gdef">Ordre de vente automatique déclenché si le prix descend sous un seuil défini. Permet de limiter ses pertes. Exemple : Stop-Loss à -7% signifie que tu vends si l'action perd 7%.</div></div>
+      <div class="gitem"><div class="gterm">Cible de prix</div><div class="gdef">Prix auquel l'analyste recommande de vendre pour encaisser les bénéfices. Il est basé sur l'analyse fondamentale et technique de l'action.</div></div>
+      <div class="gitem"><div class="gterm">Catalyseur</div><div class="gdef">Événement spécifique qui justifie l'achat aujourd'hui : résultats trimestriels meilleurs qu'attendus, upgrade analyste, annonce de contrat, lancement de produit...</div></div>
+      <div class="gitem"><div class="gterm">Buy the Dip</div><div class="gdef">Stratégie qui consiste à acheter une action quand elle a baissé temporairement, pariant sur un rebond. Fonctionne si les fondamentaux de la société restent solides.</div></div>
+      <div class="gitem"><div class="gterm">Momentum</div><div class="gdef">Force de la tendance actuelle d'une action. Un fort momentum haussier signifie que l'action monte depuis plusieurs jours avec un volume élevé.</div></div>
+      <div class="gitem"><div class="gterm">PEA</div><div class="gdef">Plan d'Épargne en Actions. Enveloppe fiscale française permettant d'investir dans des actions européennes avec une fiscalité réduite après 5 ans (exonération d'IR).</div></div>
+      <div class="gitem"><div class="gterm">CTO</div><div class="gdef">Compte-Titres Ordinaire. Compte d'investissement classique sans avantage fiscal. Les gains sont taxés à 30% (flat tax). Utilisé pour les actions non-éligibles PEA (US, Asie).</div></div>
+      <div class="gitem"><div class="gterm">P/E ratio</div><div class="gdef">Price-to-Earnings. Rapport entre le prix de l'action et le bénéfice par action. Un P/E faible vs le secteur peut indiquer une action sous-évaluée.</div></div>
+      <div class="gitem"><div class="gterm">DCF</div><div class="gdef">Discounted Cash Flow. Méthode de valorisation qui estime la valeur "intrinsèque" d'une action en actualisant ses flux de trésorerie futurs. Si le prix est inférieur à la valeur DCF, l'action est considérée sous-évaluée.</div></div>
+      <div class="gitem"><div class="gterm">DCA</div><div class="gdef">Dollar Cost Averaging. Stratégie d'investissement régulier (ex : 50€/mois sur la même action) pour lisser le prix d'achat moyen et réduire le risque de mauvais timing.</div></div>
+      <div class="gitem"><div class="gterm">Support technique</div><div class="gdef">Niveau de prix où une action a tendance à rebondir à la hausse. Si une action approche de son support, c'est souvent un bon point d'entrée pour un Buy the Dip.</div></div>
+      <div class="gitem"><div class="gterm">Upgrade analyste</div><div class="gdef">Un analyste financier (Goldman Sachs, Morgan Stanley...) revoit à la hausse sa recommandation sur une action (ex : "Neutre" → "Achat"). C'est un catalyseur positif fort.</div></div>
+      <div class="gitem"><div class="gterm">Ratio R/R</div><div class="gdef">Ratio Risque/Rendement. Calcul : potentiel gain / risque de perte. Un ratio > 1 est favorable. Exemple : cible +11% / stop-loss -7.5% = ratio 1.47.</div></div>
+      <div class="gitem"><div class="gterm">Flat tax</div><div class="gdef">Prélèvement forfaitaire unique de 30% (12.8% IR + 17.2% prélèvements sociaux) appliqué sur les gains d'un CTO en France.</div></div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disc-box">
+    <h3>⚠️ Avertissements importants</h3>
+    <ul>
+      <li>Ce dashboard est un outil d'analyse à titre éducatif uniquement. Il ne constitue pas un conseil financier personnalisé.</li>
+      <li>Les recommandations ("Acheter maintenant", "Buy the Dip", etc.) sont basées sur une analyse technique et fondamentale au moment de l'exécution du skill /bourse. Elles peuvent être erronées.</li>
+      <li>Tout investissement comporte un risque de perte en capital. Tu peux perdre tout ou partie de ton investissement.</li>
+      <li>L'éligibilité PEA d'une action doit toujours être vérifiée auprès de ton courtier (Trade Republic) avant d'investir.</li>
+      <li>Les prix live sont fournis par Yahoo Finance via un proxy public et peuvent présenter un léger décalage par rapport au marché réel.</li>
+      <li>Consulte un conseiller financier agréé avant de prendre toute décision d'investissement significative.</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  Guide du Dashboard Boursier · <a href="index.html" style="color:var(--blue);text-decoration:none">← Retour au Dashboard</a>
+</footer>
+
+</body>
+</html>
