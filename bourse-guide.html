@@ -154,9 +154,47 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:.85rem 2
   .ind-body{grid-template-columns:1fr}
   .mock-card{max-width:100%}
 }
+
+/* ── LOCK SCREEN ── */
+#lockScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0d1117;z-index:9999;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+#lockScreen.hidden{display:none}
+.lk-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:340px;text-align:center}
+.lk-icon{font-size:2.5rem;margin-bottom:.8rem}
+.lk-title{font-size:1.1rem;font-weight:600;color:#e6edf3;margin-bottom:.25rem}
+.lk-sub{font-size:.75rem;color:#6e7681;margin-bottom:1.6rem}
+.lk-input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;font-size:1rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;box-sizing:border-box}
+.lk-input:focus{border-color:#58a6ff}
+.lk-btn{width:100%;margin-top:.7rem;background:#238636;border:none;border-radius:8px;color:#fff;font-size:.95rem;font-weight:600;padding:.72rem;cursor:pointer;transition:background .2s}
+.lk-btn:hover{background:#2ea043}
+.lk-err{color:#f85149;font-size:.78rem;margin-top:.65rem;min-height:1.1rem}
 </style>
 </head>
 <body>
+
+<div id="lockScreen">
+  <div class="lk-card">
+    <div class="lk-icon">📊</div>
+    <div class="lk-title">Bourse Dashboard</div>
+    <div class="lk-sub">Accès privé — Entrez votre mot de passe</div>
+    <input type="password" id="lockPwd" class="lk-input" placeholder="Mot de passe" autofocus>
+    <button class="lk-btn" onclick="checkPwd()">Accéder →</button>
+    <div id="lockErr" class="lk-err"></div>
+  </div>
+</div>
+
+<script>
+const _H='c84403032ee422a05aaee16dbdc66b68c5cb996f4b64c60a15d3d899cee6356f';
+async function _sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function checkPwd(){
+  const v=document.getElementById('lockPwd').value;
+  if(!v)return;
+  const h=await _sha(v);
+  if(h===_H){sessionStorage.setItem('_ba','1');document.getElementById('lockScreen').classList.add('hidden');}
+  else{document.getElementById('lockErr').textContent='Mot de passe incorrect';document.getElementById('lockPwd').value='';document.getElementById('lockPwd').focus();}
+}
+document.getElementById('lockPwd').addEventListener('keydown',e=>{if(e.key==='Enter')checkPwd();document.getElementById('lockErr').textContent='';});
+if(sessionStorage.getItem('_ba')==='1')document.getElementById('lockScreen').classList.add('hidden');
+</script>
 
 <!-- NAV -->
 <nav class="nav">
