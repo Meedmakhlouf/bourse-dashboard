@@ -23,6 +23,18 @@ Chaque résultat WebSearch contient généralement une date/heure explicite ("le
 
 Ceci a été une cause d'erreur réelle constatée (prix affiché comme "aujourd'hui" alors qu'il datait de 2 jours) — sois systématique sur ce contrôle, pas juste quand ça te semble suspect.
 
+## ⛔ RÈGLE ABSOLUE #3 — Cross-validation numérique obligatoire
+
+**Un horodatage "aujourd'hui" ne suffit pas à valider un prix — deux sources peuvent toutes deux se prétendre "du jour" et diverger fortement.**
+Ceci a été constaté en audit indépendant (juillet 2026) : un même titre (Alnylam) a affiché trois prix différents à moins d'une heure d'intervalle dans la même session (320.66$, 301.03$, 286.73-295.86$ — écart de 11%), tous trois présentés comme "aujourd'hui" par leurs sources respectives.
+
+1. Avant d'accepter un `sp` comme définitif, compare-le si possible à une **deuxième source indépendante** trouvée dans la même session (une recherche de confirmation dédiée si le premier résultat ne fournit qu'un seul chiffre).
+2. Si l'écart entre deux sources datées du jour dépasse **3%**, tu ne peux pas trancher arbitrairement pour la valeur qui t'arrange (ex: la plus favorable au pick) :
+   - Relance une recherche plus précise (nom complet + ticker + "cours en direct"/"live price" + heure) pour départager.
+   - Si l'écart persiste après cette relance, retiens la source la plus précisément horodatée et **signale explicitement l'écart et les deux valeurs** dans le champ catalyst (ex: "Prix retenu 320.66$ (Investing.com, 14h32) ; une deuxième source cite 295.86$ — écart non résolu, à vérifier en direct avant toute décision").
+   - Ne jamais présenter un chiffre unique sans mentionner la divergence si elle existe et dépasse 3%.
+3. Cette règle s'applique aussi en Phase 6 (vérification des picks anciens) : un franchissement de cible ou de stop ne doit être acté (`cible_atteinte`/`stop_declenche`) que si **au moins 2 sources concordent** sur le prix ayant déclenché le seuil. Un seul chiffre isolé ne suffit pas à clôturer une position dans l'historique.
+
 ---
 
 ## Rappel — Éligibilité PEA
@@ -68,6 +80,16 @@ WebSearch: "stocks down today solid fundamentals buy opportunity $CURRENTDATE si
 WebSearch: "high growth AI semiconductor tech stocks buy $CURRENTDATE site:marketbeat.com OR site:benzinga.com"
 ```
 
+### Signaux prudents / baissiers — obligatoire, pas optionnel
+Un audit indépendant (juillet 2026) a constaté que les 13 requêtes précédentes sont **toutes formulées en langage haussier** ("gagnants", "opportunités", "sous-évaluées", "momentum"), ce qui a produit 0 recommandation `wait` sur 27 picks en 3 sessions — un biais de conception, pas un hasard de marché. Ces recherches sont **obligatoires à chaque run**, au même titre que les précédentes, pour que la catégorie "Attendre" (et le rejet pur et simple d'un candidat) restent des issues réellement possibles :
+```
+WebSearch: "downgrades analystes vente réduire $CURRENTDATE actions européennes"
+WebSearch: "profit warning avertissement résultats actions $CURRENTDATE"
+WebSearch: "stocks to avoid overbought RSI above 70 $CURRENTDATE site:marketbeat.com OR site:chartmill.com"
+WebSearch: "analyst downgrades sell rating today $CURRENTDATE site:benzinga.com OR site:cnbc.com"
+```
+Si un candidat par ailleurs séduisant (fort momentum, catalyseur positif) apparaît aussi dans ces résultats "prudents" (ex: RSI>70 confirmé, downgrade récent, proche de son plus haut 52 semaines sans nouveau catalyseur), il doit être requalifié en `wait` plutôt qu'en `buy`/`long` — ne pas écarter silencieusement le signal négatif au profit du signal positif.
+
 ### Contexte macro du jour
 ```
 WebSearch: "marchés financiers résumé aujourd'hui secteurs tendance $CURRENTDATE"
@@ -112,6 +134,19 @@ WebSearch: "market summary today hot sectors $CURRENTDATE site:cnbc.com OR site:
 - Vérifie la répartition sectorielle de chaque bloc (PEA / international) sélectionné.
 - Si plus de 2 des picks d'un même bloc appartiennent au même secteur GICS, signale-le explicitement dans l'analyse ("⚠️ Concentration sectorielle : X des Y picks PEA sont dans le secteur Z") plutôt que de le laisser passer silencieusement.
 
+### Contrôle de doublon — obligatoire avant d'ajouter un pick (corrige un défaut constaté en audit)
+Un audit indépendant a constaté que le même ticker pouvait être ajouté deux fois à quelques jours d'intervalle avec des cibles contradictoires (ex: STMicroelectronics coté "long" à 82€ de cible le 5 juillet, puis "dip" à 65.79€ de cible le 7 juillet, sans lien entre les deux entrées), créant deux thèses actives et incompatibles sur le même titre.
+- Avant de retenir un candidat, lis `historique-picks.json` et vérifie s'il existe déjà une entrée `"statut": "ouvert"` sur le même ticker.
+- Si oui, **tu ne crées pas une nouvelle entrée indépendante**. Deux options seulement :
+  1. La thèse est essentiellement inchangée (même sens, prix/cible actualisés) → tu ne dupliques pas ; tu le mentionnes dans le rapport comme "position existante, réactualisée" sans nouvelle ligne d'historique, sauf variation de prix substantielle à noter dans le texte.
+  2. La thèse a changé de nature (ex: passage de "potentiel long terme" à "buy the dip" suite à un nouvel événement) → tu marques l'ancienne entrée `"statut": "remplacé"` avec un champ `"remplace_par": "<ticker>_<date_pick_nouvelle_entree>"`, **tu expliques pourquoi** dans un champ `"note_remplacement"`, puis tu ajoutes la nouvelle entrée normalement. Ne jamais laisser deux entrées `"ouvert"` actives sur le même ticker simultanément.
+
+### Plafond de positions actives — obligatoire (corrige un défaut constaté en audit)
+Un audit indépendant a démontré qu'accumuler des positions sans jamais en clôturer rend la règle de sizing mathématiquement intenable (27 positions ouvertes après 3 sessions sur 5 jours ⇒ 135%+ du portefeuille théorique même au sizing le plus conservateur).
+- Avant de finaliser la sélection, compte le nombre d'entrées `"statut": "ouvert"` dans `historique-picks.json` (après application du contrôle de doublon ci-dessus).
+- **Si ce nombre est déjà ≥ 20** : n'ajoute aucun nouveau pick en catégorie `potential`/`long` ou `wait` cette session (ce sont les moins urgents) ; tu peux encore ajouter des `topPicks`/`dip` réellement justifiés par un catalyseur du jour, mais tu dois le signaler explicitement dans le rapport ("⚠️ Plafond de 20 positions actives atteint (X ouvertes) — seuls les signaux tactiques du jour ont été ajoutés, la vérification de performance ci-dessous doit être traitée en priorité avant la prochaine session").
+- Ce plafond doit inciter à exécuter la Phase 6 (vérification) plus agressivement plutôt qu'à l'ignorer.
+
 ---
 
 ## PHASE 3 — Recherche des prix réels pour chaque action sélectionnée
@@ -128,12 +163,12 @@ WebSearch: "[NOM] [TICKER] stock price today $CURRENTDATE"
 ```
 
 Recueille pour chaque action :
-- Prix actuel (cours du jour) — **avec vérification de l'horodatage (RÈGLE ABSOLUE #2)**
+- Prix actuel (cours du jour) — **avec vérification de l'horodatage (RÈGLE ABSOLUE #2) et cross-validation numérique (RÈGLE ABSOLUE #3)**
 - Variation % du jour
-- Plus haut / plus bas 52 semaines si disponible
+- **Plus haut / plus bas 52 semaines — recherche obligatoire, pas optionnelle** (nécessaire au calcul du stop, voir Phase 5). Si vraiment introuvable après une recherche dédiée, note-le explicitement et utilise le stop par défaut le plus prudent du palier de risque (borne haute de la fourchette, voir table des règles de calcul).
 - Cible consensus analystes si disponible — sinon `target:'N/A'`, ne jamais inventer une cible de substitution
 - Niveau de support technique / stop suggéré par une source si disponible (ex: "support à 165€", "stop technique sous les 44$") — **à utiliser en priorité sur le stop-loss générique par pourcentage**
-- RSI si disponible
+- RSI si disponible — si le critère de sélection de la catégorie retenue en dépend explicitement (`RSI<40` pour dip, `RSI>70` pour wait), une valeur `N/A` **ne valide pas silencieusement le critère** : signale que le critère quantitatif n'a pas pu être vérifié plutôt que de le traiter comme rempli.
 
 ---
 
@@ -198,7 +233,8 @@ Recueille pour chaque action :
 
 ### 📊 Note de gestion du risque
 
-- **Sizing suggéré** : aucune position individuelle > 5–8% du portefeuille total ; aucun secteur > 25% du portefeuille cumulé sur l'ensemble des picks actifs (PEA + international).
+- **Sizing suggéré (aligné sur `bourse-guide.html` — une seule règle, pas deux versions contradictoires)** : 🟢 Faible risque jusqu'à 15–20% par action, 🟡 Modéré jusqu'à 10%, 🔴 Élevé 2–5% max ; jamais plus de 20% du portefeuille sur une seule ligne quel que soit le signal ; aucun secteur GICS > 25% du portefeuille cumulé sur l'ensemble des picks actifs (PEA + international).
+- **Positions actives** : [nombre d'entrées `"statut": "ouvert"` dans `historique-picks.json` après cette session] / plafond de 20 (voir Phase 2, "Plafond de positions actives"). Si le plafond est atteint ou dépassé, le mentionner explicitement.
 - **Alerte de concentration** : [reprendre ici le résultat du contrôle de diversification de la Phase 2, ou "aucune concentration excessive détectée"]
 
 ### 🔗 Sources Utilisées
@@ -297,7 +333,7 @@ const STOCKS = {
 | `mp` | `Math.ceil(sp)` — prix arrondi à l'entier supérieur |
 | `hp` | `true` si sp > 200 ET potentiel > 15% et clairement justifié |
 | `target` | Cible analystes réelle si trouvée via WebSearch. **Si aucune cible n'est trouvée : `'N/A'`. Ne jamais générer une cible par multiplicateur arbitraire (ex: sp×1.15).** |
-| `sl` | En priorité : niveau de support technique mentionné dans une source. À défaut seulement, valeur par défaut : low: sp × 0.92 / moderate: sp × 0.91 / high: sp × 0.90 — et dans ce cas, le signaler comme "stop par défaut, non technique" dans le catalyseur. |
+| `sl` | **1. En priorité, toujours** : niveau de support technique mentionné dans une source (ex: "support à 165€"). **2. Si absent, stop ajusté à la volatilité réelle** (corrige un défaut constaté en audit : un stop générique à -10% s'est révélé plus étroit que le range récent observé de certains titres, ex. Western Digital ayant varié de 553$ à 746$ sur quelques séances — un stop à -10% y aurait presque garanti une sortie sur du bruit). Calcule `range52% = (plus_haut_52s − plus_bas_52s) / sp`. Le stop par défaut est alors `sp × (1 − max(pct_palier, min(range52% × 0.25, 0.20)))`, où `pct_palier` = 0.08 (low) / 0.09 (moderate) / 0.10 (high). Autrement dit : le plancher reste le pourcentage du palier de risque, mais si le titre a une amplitude 52 semaines large, le stop s'élargit en conséquence (plafonné à -20% pour rester exploitable). **3. Si le plus haut/bas 52 semaines est introuvable malgré une recherche dédiée** : utilise le pourcentage du palier seul, mais signale explicitement "stop par défaut sans données de volatilité — à valider en direct" dans le catalyseur, plutôt que de le présenter comme un stop normalement calibré. Dans tous les cas où ce n'est pas un support technique réel, l'indiquer clairement ("stop par défaut, non technique" ou "stop élargi pour volatilité, non technique"). |
 
 ### Vérification avant d'écrire le fichier
 
@@ -308,6 +344,10 @@ const STOCKS = {
 - [ ] `DATE_ANALYSE` = date du jour en français
 - [ ] Aucun prix parmi les actions du dashboard actuel n'a été réutilisé sans re-vérification
 - [ ] Le contrôle de diversification sectorielle (Phase 2) a été effectué et reporté
+- [ ] Le contrôle de doublon (Phase 2) a été effectué — aucun ticker n'a deux entrées `"ouvert"` simultanées dans `historique-picks.json`
+- [ ] Le plafond de 20 positions actives (Phase 2) a été vérifié avant d'ajouter des picks `potential`/`long`/`wait`
+- [ ] Toute divergence de prix entre sources >3% (RÈGLE ABSOLUE #3) a été signalée explicitement, pas résolue silencieusement
+- [ ] Chaque stop-loss non technique précise s'il s'agit d'un "stop par défaut" (palier de risque seul) ou d'un "stop élargi pour volatilité" (range 52 semaines pris en compte)
 
 ---
 
@@ -315,8 +355,11 @@ const STOCKS = {
 
 **Objectif : ce système ne peut être jugé fiable que si ses recommandations passées sont mesurables. Ne jamais écraser l'historique — toujours l'enrichir.**
 
+Un audit indépendant (juillet 2026) a constaté que la règle précédente ("vérifier seulement après 30 jours") avait pour effet que **la vérification n'avait jamais tourné une seule fois** en plusieurs sessions actives — 27 positions accumulées, 0 vérifiées, 0 taux de réussite calculable. La règle ci-dessous corrige ce défaut : la vérification tourne **à chaque session**, pas seulement après 30 jours.
+
 1. Lis le fichier `historique-picks.json` à la racine du projet (créer `{"picks":[]}` s'il n'existe pas encore).
-2. **Ajoute** (n'écrase jamais les entrées existantes) une entrée pour chaque action retenue dans cette session, au format :
+2. **Contrôle de doublon d'abord** (voir Phase 2) : pour chaque action retenue cette session, vérifie qu'aucune entrée `"statut": "ouvert"` n'existe déjà sur le même ticker avant d'en ajouter une nouvelle. Si une entrée existe et que la thèse a changé, marque l'ancienne `"statut": "remplacé"` avec `"remplace_par"` et `"note_remplacement"` (voir Phase 2) avant d'ajouter la nouvelle.
+3. **Ajoute** (n'écrase jamais les entrées existantes, ne fait que les enrichir ou les marquer `remplacé`/`cible_atteinte`/`stop_declenche`) une entrée pour chaque action réellement nouvelle retenue cette session, au format :
    ```json
    {
      "date_pick": "2026-07-05",
@@ -329,14 +372,23 @@ const STOCKS = {
      "target": "90€ (+16.4%)",
      "stop": "70.38€ (-9.0%)",
      "horizon": "Moyen terme",
-     "statut": "ouvert"
+     "statut": "ouvert",
+     "remplace_par": null,
+     "note_remplacement": null,
+     "derniere_verification": null
    }
    ```
-3. **Vérification de performance** : parcours les entrées existantes dont `date_pick` a plus de 30 jours et dont `statut` est encore `"ouvert"`. Pour un échantillon raisonnable (max 5 par run, pour ne pas exploser le nombre de recherches), effectue une recherche WebSearch du prix actuel et détermine :
-   - `"statut": "cible_atteinte"` si le prix a atteint/dépassé la cible
-   - `"statut": "stop_declenche"` si le prix a touché le stop
-   - `"statut": "ouvert"` sinon (toujours en cours)
-4. Ajoute dans la Phase 4 une section **📈 Bilan des picks précédents** avec le taux de réussite calculé sur les entrées clôturées (`cible_atteinte` / (`cible_atteinte` + `stop_declenche`)), même si l'échantillon est encore petit — l'objectif est de le faire converger dans le temps, pas d'avoir un chiffre parfait dès le premier mois.
+4. **Vérification de performance — à chaque session, pas seulement après 30 jours.**
+   - Prends toutes les entrées `"statut": "ouvert"`, triées par `date_pick` croissant (les plus anciennes d'abord — rotation FIFO).
+   - Vérifie-en **au maximum 8 par run** (pour ne pas exploser le nombre de recherches), en priorisant strictement les plus anciennes non encore vérifiées récemment. S'il y a plus de 8 positions ouvertes, les entrées non couvertes ce run-ci seront couvertes au prochain run — sur quelques sessions, l'ensemble du portefeuille actif finit par être revu, au lieu de rester gelé pendant 30 jours.
+   - Pour chaque entrée sélectionnée, effectue une recherche WebSearch du prix actuel et applique la **RÈGLE ABSOLUE #3** (cross-validation ≥2 sources avant d'acter un franchissement) :
+     - `"statut": "cible_atteinte"` si le prix a atteint/dépassé la cible, confirmé par ≥2 sources
+     - `"statut": "stop_declenche"` si le prix a touché le stop, confirmé par ≥2 sources
+     - `"statut": "ouvert"` sinon (toujours en cours) — ajoute un champ `"derniere_verification": "AAAA-MM-JJ"` pour tracer qu'elle a bien été passée en revue, même sans clôture.
+5. Ajoute dans la Phase 4 une section **📈 Bilan des picks précédents** avec :
+   - Le nombre de positions vérifiées ce run, le nombre total ouvertes, et le nombre en attente de rotation.
+   - Le taux de réussite calculé sur les entrées clôturées (`cible_atteinte` / (`cible_atteinte` + `stop_declenche`)), même si l'échantillon est encore petit — l'objectif est de le faire converger dans le temps, pas d'avoir un chiffre parfait dès le premier mois.
+   - Si le taux de réussite reste non calculable (0 entrée clôturée) après plusieurs sessions consécutives, le signaler explicitement comme une limite de fiabilité du système plutôt que de l'omettre.
 
 ---
 
@@ -347,4 +399,6 @@ const STOCKS = {
 - Toujours indiquer **Trade Republic** (PEA) et **Scalable Capital** (international)
 - Si les marchés sont fermés : base-toi sur les derniers cours clôture + actualités récentes
 - Si un prix ne peut pas être trouvé via WebSearch : `sp:0, sv:'N/A'` dans le dashboard et signale-le dans l'analyse
+- `reco:'wait'` est une issue légitime et attendue, pas un échec de la recherche — ne force jamais un candidat ambigu vers `buy`/`long`/`dip` uniquement parce que la catégorie "wait" semble moins valorisante à présenter
+- La vérification de performance (Phase 6) et le contrôle de doublon (Phase 2) ne sont pas optionnels même les jours où le scan de marché est riche en opportunités — un système qui ne se vérifie jamais lui-même n'a aucune valeur démontrable, quelle que soit la qualité apparente des nouveaux picks
 - En fin de session, committe et pousse les changements (`index.html`, `historique-picks.json`) — voir `run-bourse.ps1` pour l'automatisation quotidienne
