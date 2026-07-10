@@ -411,6 +411,7 @@ Un audit indépendant (juillet 2026) a constaté que la règle précédente ("v�
 7. **Ne jamais recommander un verdict sur la base d'une seule source si le prix ou le catalyseur est ambigu** — dans ce cas, verdict 🔵 Conserver avec mention explicite de l'incertitude, exactement comme pour les picks du système (RÈGLE ABSOLUE #3).
 8. **Mets à jour `data-privees/portefeuille-utilisateur.json`** après chaque ligne traitée : `derniere_verification` (date du jour), `derniere_recommandation` (le verdict + une phrase de justification).
 9. **Ce système ne passe jamais d'ordre et n'automatise aucune transaction** — il produit une recommandation que l'utilisateur exécute lui-même, ou non, sur sa plateforme.
+10. **Régénère `data-privees/portefeuille-dashboard.html`** (vue HTML locale, jamais publiée — voir bannière dans le fichier) avec les verdicts mis à jour cette session : la section "Verdicts de la session du [date]" reflète uniquement les lignes traitées ce run-ci, les tableaux PEA/Compte-Titres gardent l'historique complet des verdicts précédents (badge "Non vérifié" pour les lignes jamais traitées). Ce fichier est commité dans le dépôt privé `data-privees/`, jamais dans le dépôt public.
 
 ### Section à ajouter en Phase 4
 

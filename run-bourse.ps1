@@ -44,7 +44,7 @@ if ($hasChanges) {
 
 # Commit et push des données sensibles vers le dépôt privé séparé (data-privees/)
 Set-Location "$REPO_DIR\data-privees"
-git add historique-picks.json portefeuille-utilisateur.json
+git add historique-picks.json portefeuille-utilisateur.json portefeuille-dashboard.html
 
 $hasPrivateChanges = git diff --cached --quiet; if (-not $?) { $true } else { $false }
 
