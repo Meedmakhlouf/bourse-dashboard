@@ -1,2 +1,7 @@
 .claude/settings.local.json
 bourse-run.log
+
+# Données sensibles — suivies séparément dans le dépôt privé bourse-donnees-privees
+data-privees/
+historique-picks.json
+portefeuille-utilisateur.json
