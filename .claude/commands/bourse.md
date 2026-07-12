@@ -419,6 +419,24 @@ Ajoute une section **📋 Ton portefeuille personnel** après le "Bilan des pick
 
 ---
 
+## PHASE 7bis — 🎯 Suivi de l'allocation stratégique 80/20 (OBLIGATOIRE si `allocation_cible` existe dans le fichier)
+
+**Objectif : depuis le 12 juillet 2026, l'utilisateur a fixé une stratégie explicite pour préparer sa retraite (horizon >20 ans) : 80% du portefeuille en Socle Dividendes long terme, 20% en Trading Tactique. Cette phase vérifie que la réalité du portefeuille converge vers cette cible, sans jamais exécuter de transaction.**
+
+1. Lis le bloc `allocation_cible` dans `data-privees/portefeuille-utilisateur.json` (règles, candidats de diversification, décision d'origine). S'il n'existe pas, saute cette phase entièrement.
+2. Pour chaque position, lis son champ `bloc_strategique` (`socle-dividendes` / `trading-tactique` / `en-sortie`). Si une ligne n'a pas ce champ (nouvelle ligne ajoutée manuellement par l'utilisateur depuis la dernière session), applique la règle de classification et propose-la explicitement à l'utilisateur dans le rapport plutôt que de la classer silencieusement : dividende réel + secteur cohérent avec le socle → `socle-dividendes` ; conviction de croissance sans dividende ou pick tactique de courte durée → `trading-tactique`.
+3. **Calcule le poids approximatif de chaque bloc** : pour chaque ligne, valeur ≈ quantité × dernier prix connu (celui vérifié cette session en Phase 7, ou le plus récent `derniere_recommandation` si non revérifié ce run, ou à défaut `prix_acquisition_moyen`). Exclut les lignes `"type": "à confirmer"` de ce calcul (ex: SPACEX_TR) et signale-les séparément. Précise toujours que c'est une approximation basée sur les derniers prix connus par le système, pas un relevé de compte exact — l'utilisateur doit se référer à Trade Republic pour la valeur exacte.
+4. **Alerte de dérive** : si le socle dividendes tombe sous 75% ou dépasse 85% du total (hors lignes `en-sortie` et `à confirmer`), signale-le explicitement avec le chiffre exact. Idem si le trading tactique dépasse 25%.
+5. **Lignes `en-sortie`** : rappelle à chaque session tant qu'elles sont encore présentes dans le fichier que l'utilisateur doit exécuter la vente lui-même sur Trade Republic (le système ne passe jamais d'ordre) et mettre à jour le fichier une fois fait — ne jamais les recompter dans le socle ni dans le trading tant qu'elles portent ce statut.
+6. **Rotation des candidats de diversification** : si un des tickers listés dans `candidats_diversification_socle` apparaît dans les résultats de la Phase 1 de cette session (upgrade, résultats, actualité), mentionne-le dans le rapport comme un point d'entrée potentiellement opportun pour combler le secteur manquant correspondant — avec prix et catalyseur revérifiés cette session (RÈGLES ABSOLUES #1/#2/#3), jamais le prix figé au moment de son ajout à la liste.
+7. **N'ajoute jamais automatiquement un candidat de diversification au portefeuille réel** — il ne devient une ligne de `positions` que si l'utilisateur confirme l'avoir acheté.
+
+### Section à ajouter en Phase 4
+
+Ajoute une section **🎯 Allocation stratégique 80/20** juste après "Ton portefeuille personnel", avec : le poids approximatif Socle/Trading/En-sortie du moment, toute alerte de dérive, le rappel des lignes en-sortie encore ouvertes, et un maximum de 2 candidats de diversification à mettre en avant ce run-ci s'ils sont pertinents (pas besoin de tous les lister à chaque session).
+
+---
+
 ## Instructions générales
 
 - Chaque lancement = scan complet du marché mondial ce jour-là — aucune liste fixe
