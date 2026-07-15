@@ -787,17 +787,17 @@ function showView(name){
 /* ════════════════════════════════════════════
    DONNÉES — met à jour après chaque /bourse
 ════════════════════════════════════════════ */
-const DATE_ANALYSE = "14 juillet 2026";
+const DATE_ANALYSE = "16 juillet 2026";
 
 const STOCKS = {
  pea:{
   topPicks:[
-   {yt:'TTE.PA', dt:'TTE', name:'TotalEnergies SE',
-    bourse:'Euronext Paris', secteur:'Énergie / Pétrole & Gaz',
-    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:72,
-    sp:71.12, sv:'+0.99%', sc:'€',
-    catalyst:'Catalyseur non seulement toujours actif mais intensifié depuis hier : nouvelles frappes américaines massives sur l\'Iran, blocus naval américain, ripostes iraniennes visant des pétroliers émiratis et des installations US au Bahreïn/Jordanie. Brent +4.93% à 87.41$ (plus haut niveau depuis mi-juin). TotalEnergies confirmée en hausse (Boursorama, 17:29 le 14 juillet), cohérent avec un article dédié à la clôture du CAC40 mentionnant +3%. Risque : catalyseur géopolitique aigu, réversible rapidement en cas d\'accord diplomatique surprise — stop resserré en conséquence.',
-    target:'84.52€ (+21.1%)', sl:'67.29€ (-3.5%) — support technique', horizon:'Court terme (1–3 mois)'},
+   {yt:'AIR.PA', dt:'AIR', name:'Airbus SE',
+    bourse:'Euronext Paris', secteur:'Aérospatiale / Défense',
+    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:196,
+    sp:195.50, sv:'N/A', sc:'€',
+    catalyst:'Upgrade JPMorgan le 15/07/2026 : objectif de cours relevé de 225€ à 240€ (maintien overweight), après un relèvement des estimations de BPA 2026-2030 de 1 à 6%, porté par l\'appréciation du dollar (avantage pour cet exportateur européen). Catalyseur confirmé par 2 sources indépendantes (abcbourse.com, reprise Zonebourse). Prix cross-validé par 2 sources concordantes (194.98€, 195.94€, écart <1% — une 3e source à 175.24€ manifestement obsolète a été écartée). Pas de forte variation journalière isolée : catalyseur porté par l\'upgrade daté plutôt que par un mouvement de cours du jour (sv: N/A). 52 semaines : 157.42-221.30€, aucun signal de surachat détecté.',
+    target:'240€ (+22.8%) [JPMorgan] — consensus plus large 214.83€', sl:'177.91€ (-9.0%) — stop par défaut (palier de risque), non technique', horizon:'Moyen terme (6-12 mois)'},
   ],
   potential:[
   ],
@@ -806,24 +806,6 @@ const STOCKS = {
  },
  international:{
   topPicks:[
-   {yt:'GS', dt:'GS', name:'The Goldman Sachs Group Inc.',
-    bourse:'NYSE', secteur:'Financières / Banques d\'investissement',
-    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:1140,
-    sp:1140.00, sv:'+9.0%', sc:'$',
-    catalyst:'Résultats T2 2026 historiques (14/07) : BPA 20.98$ vs 14.48-14.54$ attendu, revenus 20.34 Md$ vs 16.40 Md$ attendus, portés par le trading actions (record 7.42 Md$) et +55% de frais de banque d\'affaires. Titre +7.5% à +9% en séance (record depuis avril 2025), cross-validé par 4 sources indépendantes (écarts <1%). ⚠️ Cible consensus pré-résultats (1010-1020$) déjà obsolète (inférieure au cours actuel), non encore révisée par les analystes — cible non affichée plutôt que d\'utiliser un chiffre caduc. Cours a dépassé son plus haut 52 semaines (~1125$) en intraday.',
-    target:'N/A', sl:'1028$ (-9.8%) — stop élargi pour volatilité, non technique', horizon:'Court-moyen terme (effet post-résultats)'},
-   {yt:'HAL', dt:'HAL', name:'Halliburton Company',
-    bourse:'NYSE', secteur:'Énergie / Services pétroliers',
-    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:36,
-    sp:35.21, sv:'N/A', sc:'$',
-    catalyst:'Upgrade Piper Sandler Overweight (ex-Neutral) le 14/07, objectif relevé 40→43$, confirmé par 2 sources (Investing.com, 24/7 Wall St) : le repli >20% depuis les plus hauts de mi-mai devient un point d\'entrée, fondamentaux US Land solides, tailwind macro (Brent +2.68% à 85.53$ sur tensions Iran/Ormuz). Consensus plus large 44.08$ (20 buy/2 sell), cohérent. Variation du jour non confirmée par une 2e source (sv: N/A) — pick retenu sur la force du catalyseur, pas sur un momentum de prix vérifié.',
-    target:'43$ (+22.1%)', sl:'29.36$ (-16.6%) — stop élargi pour volatilité, non technique', horizon:'Moyen terme'},
-   {yt:'NEM', dt:'NEM', name:'Newmont Corporation',
-    bourse:'NYSE', secteur:'Matériaux / Or',
-    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:94,
-    sp:93.10, sv:'N/A', sc:'$',
-    catalyst:'Upgrade TD Cowen Buy (ex-Hold) le 14/07, objectif 127$, confirmé par 2 sources (24/7 Wall St, Boursorama) : rallye sectoriel des minières aurifères suite à l\'inflation US plus faible que prévu (CPI juin +3.5% vs 4.2% attendu). Consensus plus large 139-144$, cohérent et supérieur à la cible retenue. ⚠️ Divergence de prix non résolue : 93.10$ retenu (3 agrégateurs concordants) vs Robinhood 96.72$ le même jour (écart 3.9%), signalé explicitement. RSI non confirmé aujourd\'hui (critère non vérifié, pas silencieusement validé).',
-    target:'127$ (+36.4%)', sl:'74.48$ (-20.0%, plafond) — stop élargi pour volatilité, non technique', horizon:'Moyen terme'},
   ],
   potential:[
   ],
