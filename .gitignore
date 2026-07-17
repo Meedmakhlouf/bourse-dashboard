@@ -1,6 +1,9 @@
 .claude/settings.local.json
 bourse-run.log
 
+# Classeurs DCF régénérés à chaque session — locaux uniquement, non versionnés
+dcf-analyses/
+
 # Données sensibles — suivies séparément dans le dépôt privé bourse-donnees-privees
 data-privees/
 historique-picks.json

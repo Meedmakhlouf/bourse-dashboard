@@ -787,17 +787,17 @@ function showView(name){
 /* ════════════════════════════════════════════
    DONNÉES — met à jour après chaque /bourse
 ════════════════════════════════════════════ */
-const DATE_ANALYSE = "16 juillet 2026";
+const DATE_ANALYSE = "17 juillet 2026";
 
 const STOCKS = {
  pea:{
   topPicks:[
-   {yt:'AIR.PA', dt:'AIR', name:'Airbus SE',
-    bourse:'Euronext Paris', secteur:'Aérospatiale / Défense',
-    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:196,
-    sp:195.50, sv:'N/A', sc:'€',
-    catalyst:'Upgrade JPMorgan le 15/07/2026 : objectif de cours relevé de 225€ à 240€ (maintien overweight), après un relèvement des estimations de BPA 2026-2030 de 1 à 6%, porté par l\'appréciation du dollar (avantage pour cet exportateur européen). Catalyseur confirmé par 2 sources indépendantes (abcbourse.com, reprise Zonebourse). Prix cross-validé par 2 sources concordantes (194.98€, 195.94€, écart <1% — une 3e source à 175.24€ manifestement obsolète a été écartée). Pas de forte variation journalière isolée : catalyseur porté par l\'upgrade daté plutôt que par un mouvement de cours du jour (sv: N/A). 52 semaines : 157.42-221.30€, aucun signal de surachat détecté.',
-    target:'240€ (+22.8%) [JPMorgan] — consensus plus large 214.83€', sl:'177.91€ (-9.0%) — stop par défaut (palier de risque), non technique', horizon:'Moyen terme (6-12 mois)'},
+   {yt:'ACX.MC', dt:'ACX', name:'Acerinox SA',
+    bourse:'BME Madrid', secteur:'Matériaux / Acier inoxydable',
+    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:17,
+    sp:16.41, sv:'+1.17%', sc:'€',
+    catalyst:'Upgrade Jefferies le 15/07/2026 (Strong Buy, objectif relevé de 14.50€ à 18.00€), confirmé par 2 sources indépendantes (MarketBeat, Bolsamania) — catalyseur daté de 2 jours avant ce pick, signalé explicitement plutôt que présenté comme daté du jour. Argument : exposition croissante aux marchés US et acquisition Haynes jugées structurellement positives, contexte réglementaire plus favorable malgré une reprise de la demande européenne repoussée à 2027. ⚠️ Prix sourcé via Investing.com uniquement — 2e source indépendante non trouvée malgré tentative, à confirmer avant renforcement. 52 semaines : 9.93-17.44€.',
+    target:'18.00€ (+9.7%) [Jefferies]', sl:'14.53€ (-11.4%) — stop élargi pour volatilité, non technique', horizon:'Moyen terme (6-12 mois)'},
   ],
   potential:[
   ],
@@ -806,10 +806,38 @@ const STOCKS = {
  },
  international:{
   topPicks:[
+   {yt:'ABT', dt:'ABT', name:'Abbott Laboratories',
+    bourse:'NYSE', secteur:'Santé / Diagnostics-Devices',
+    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:99,
+    sp:98.83, sv:'+10.71%', sc:'$',
+    catalyst:'Résultats T2 2026 publiés le 16/07/2026 : BPA ajusté 1.31$ (vs 1.28$ attendu), guidance FY26 relevée à 5.45-5.60$. Titre +10.71% à +12.5% en séance selon la source (écart 1.6%, sous le seuil de 3%), cross-validé par 2 sources indépendantes (StockAnalysis.com, GuruFocus, toutes deux clôture du 16/07 16h EDT). Consensus analystes Buy (18-28 analystes selon la source, aucun Sell). 52 semaines : 81.97-137.49$ (range large reflétant une volatilité antérieure, d\'où le stop élargi).',
+    target:'117$ (+18.4%) [consensus 116.40-117.95$ selon la source]', sl:'84.94$ (-14.1%) — stop élargi pour volatilité (range 52 semaines), non technique', horizon:'Moyen terme (6-12 mois)'},
+   {yt:'USB', dt:'USB', name:'U.S. Bancorp',
+    bourse:'NYSE', secteur:'Financières / Banque régionale',
+    reco:'buy', risque:'moderate', rl:'Modéré', hp:false, mp:65,
+    sp:64.01, sv:'+1.59%', sc:'$',
+    catalyst:'Résultats T2 2026 publiés le 16/07/2026, au-dessus des attentes sur BPA et revenus, guidance annuelle relevée. Prix retenu 64.01$ (StockAnalysis.com, clôture 16/07 16h EDT) ; une 2e source cite 62.14$ (+0.82%) — écart ~3.0%, à la limite du seuil, signalé explicitement (RÈGLE ABSOLUE #3). 52 semaines : 43.46-64.27$ (proche du plus haut annuel). Catalyseur confirmé par plusieurs relèvements de cible nommés (Jefferies upgrade Buy à 75$, Morgan Stanley 67$, Wells Fargo 66$).',
+    target:'68.10$ (+6.4%) [consensus] — relèvements individuels plus agressifs (Jefferies 75$, Morgan Stanley 67$, Wells Fargo 66$)', sl:'58.25$ (-9.0%)', horizon:'Moyen terme (6-12 mois)'},
   ],
   potential:[
   ],
   dip:[
+   {yt:'DHR', dt:'DHR', name:'Danaher Corporation',
+    bourse:'NYSE', secteur:'Santé / Life Sciences Tools',
+    reco:'dip', risque:'moderate', rl:'Modéré', hp:true, mp:206,
+    sp:205.01, sv:'+2.10%', sc:'$',
+    raisonBaisse:'Baisse de ~15.5% depuis le plus haut 52 semaines (242.80$) sans détérioration des fondamentaux identifiée.',
+    fondamentaux:'Commandes en croissance séquentielle depuis 3 trimestres, book-to-bill normalisé, guidance bioprocessing high-single-digit. Consensus Strong Buy (22 buy / 4 hold / 0 sell selon la source). Bilan/cash-flow non vérifiés explicitement cette session, signalé plutôt que silencieusement validé.',
+    catalyst:'RSI en zone survendue (27-37 selon la source, critère dip confirmé). Résultats Q2 attendus le 21/07/2026 — à surveiller de près.',
+    target:'246$ (+20.0%) [consensus 242.26-249.93$ selon la source]', sl:'184.58$ (-10.0%) — stop élargi pour volatilité, non technique', horizon:'6-12 mois'},
+   {yt:'SNDK', dt:'SNDK', name:'SanDisk Corporation',
+    bourse:'NASDAQ', secteur:'Technologie / Semi-conducteurs mémoire',
+    reco:'dip', risque:'high', rl:'Élevé', hp:true, mp:1412,
+    sp:1411.08, sv:'-12.63%', sc:'$',
+    raisonBaisse:'⚠️ Chute de -12.63% ce jour (16/07), s\'ajoutant à -15% déjà subis le 15/07 après l\'initiation "Hold" d\'Argus — ceci n\'est PAS une baisse isolée mais un dégagement sectoriel généralisé sur les semi-conducteurs mémoire (MU, AMD, WDC déjà en position ouverte également touchés). Risque de "couteau qui tombe" explicitement signalé.',
+    fondamentaux:'Cible 2035.05$ et consensus Buy (22 analystes) trouvés, mais bilan/cash-flow/absence de profit warning non vérifiés explicitement (critère dip non silencieusement validé) — à ne considérer qu\'avec une forte conviction sur le narratif mémoire/IA à moyen terme.',
+    catalyst:'52 semaines 40.10-2354.39$ (amplitude extrême, artefact probable du spin-off Western Digital — stop calculé plafonné à -20% en conséquence, pas un niveau technique).',
+    target:'2035.05$ (+44.3%) [consensus Buy, 22 analystes]', sl:'1128.86$ (-20.0%, plafond) — stop élargi pour volatilité extrême (sell-off sectoriel), non technique', horizon:'3-6 mois (spéculatif — sell-off sectoriel en cours)'},
   ]
  }
 };

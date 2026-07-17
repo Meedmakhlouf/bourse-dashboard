@@ -172,6 +172,18 @@ Recueille pour chaque action :
 
 ---
 
+## PHASE 3bis — 📐 DCF complet pour les Top Picks (skill `financial-analysis:dcf-model`)
+
+**Objectif : produire une valorisation DCF Excel complète pour chaque Top Pick (`reco:'buy'`) retenu en Phase 2/3 — PEA et international confondus. Demandé explicitement par l'utilisateur le 17 juillet 2026.**
+
+1. Pour chaque action en catégorie `topPicks` (PEA et international), invoque le skill `financial-analysis:dcf-model` pour construire un classeur DCF complet (projections de flux de trésorerie, calcul du WACC, valeur terminale, analyse de sensibilité).
+2. **Limite connue pour les actions PEA/européennes** : ce skill s'appuie normalement sur des filings SEC, qui n'existent pas pour les sociétés non cotées aux US. Pour ces tickers, construis le modèle à partir des données publiques disponibles (rapports annuels, communiqués de résultats, consensus analystes trouvés par WebSearch). Si une hypothèse clé (croissance, marges, WACC) n'est pas trouvable avec une source réelle, ne l'invente jamais (RÈGLE ABSOLUE #1) : indique-la comme "hypothèse par défaut sectorielle, à valider" plutôt que de la présenter comme sourcée.
+3. **Enregistrement** : chaque classeur est sauvegardé dans `dcf-analyses/<TICKER>_<date_du_jour>.xlsx` à la racine du projet. Ce dossier est local uniquement (gitignoré) — il n'est committé dans aucun des deux dépôts, pour ne pas alourdir l'historique git avec des binaires régénérés à chaque session.
+4. **Résumé obligatoire dans le rapport (Phase 4)** : pour chaque Top Pick, ajoute sous sa fiche existante une ligne **Valorisation DCF** : valeur intrinsèque estimée, écart en % vs prix actuel (`sp`), et le chemin du fichier Excel généré. Si le DCF n'a pas pu être construit faute de données suffisantes, indique-le explicitement plutôt que d'omettre la ligne.
+5. Cette phase ne s'applique qu'aux Top Picks (catégorie `topPicks`, `reco:'buy'`) — pas aux catégories `potential`/`dip`/`wait`, pour ne pas alourdir excessivement la durée de session (décision utilisateur du 17 juillet 2026).
+
+---
+
 ## PHASE 4 — Présentation de l'analyse
 
 ---
@@ -198,6 +210,7 @@ Recueille pour chaque action :
 - **Cible** : XX.XX€ (+XX%) ou N/A | **Stop** : XX.XX€ (-X%) [support technique] | **Horizon** : X mois
 - **Risque** : 🟢 Faible / 🟡 Modéré / 🔴 Élevé
 - **Allocation suggérée** : voir note de sizing en fin de rapport (aucune position ne devrait dépasser la limite indiquée)
+- **Valorisation DCF** : XX.XX€ (valeur intrinsèque), écart de +/-XX% vs prix actuel — classeur `dcf-analyses/[TICKER]_[date].xlsx` (voir Phase 3bis) ; ou "DCF non concluant — données insuffisantes" si applicable
 
 ---
 
